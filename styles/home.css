@@ -1,6 +1,7 @@
 .home-page {
   height: 100%;
   width: 100%;
+  padding-inline: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,6 +35,7 @@
 }
 
 .add-quizz h3 {
+  margin-inline: 15px;
   margin-bottom: 25px;
   font-family: "Roboto";
   font-style: normal;
