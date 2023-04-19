@@ -6,6 +6,7 @@ body {
     width: 100%;
     height: 100%;
     font-family: 'Roboto', sans-serif;
+    background-color: #FAFAFA;
 }
 
 header {
@@ -25,7 +26,6 @@ header h1 {
     font-weight: 700;
     font-size: 37px;
     line-height: 43px;
-
     color: #FFFFFF;
 }
 
@@ -96,8 +96,13 @@ button.submitButton {
     border-radius: 15px;
 }
 
+.hidden{
+    display: none;
+}
 
-u2l,
-d2iv {
+
+/*
+ul,
+div {
     outline: 2px solid red;
 }
