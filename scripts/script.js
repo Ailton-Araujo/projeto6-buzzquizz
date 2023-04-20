@@ -92,7 +92,6 @@ function displayQuizz(array) {
             </div>
             `;
     }
-
     i++;
   }
 }
@@ -143,11 +142,17 @@ function openQuestion(element) {
     questionOpened.classList.remove("opened");
     questionOpened.classList.add("closed");
     questionOpened.previousElementSibling.innerHTML += `
-    <button type="button" onclick="openQuestion(this)"><img src="./assets/button-img.png" alt=""></button>`
+    <button data-test="toggle" type="button" onclick="openQuestion(this)"><img src="./assets/button-img.png" alt=""></button>`
 
     element.parentNode.nextElementSibling.classList.remove("closed");
     element.parentNode.nextElementSibling.classList.add("opened");
-    element.remove();
+    setTimeout(() => {
+        element.parentElement.parentElement.scrollIntoView({ block: "start" })
+    }, 320);
+    setTimeout(() => {
+        element.remove();
+    }, 330);
+
 }
 
 
@@ -201,7 +206,7 @@ function renderUserQuestions(object) {
         </div>`
         if (i > 0) {
             questionsFront.querySelector(`.question${i + 1} .closed`).previousElementSibling.innerHTML += `
-            <button type="button" onclick="openQuestion(this)"><img src="./assets/button-img.png" alt=""></button>`
+            <button data-test="toggle" type="button" onclick="openQuestion(this)"><img src="./assets/button-img.png" alt=""></button>`
         }
     };
 }
