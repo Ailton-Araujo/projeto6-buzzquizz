@@ -40,6 +40,36 @@
     align-items: center;
 }
 
+.questionButton{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.questionButton button{
+    width: 25px;
+    height: 25px;
+    border: none;
+    background: none;
+}
+
+.questionButton button.ionic-icon{
+    width: 23px;
+    height: 23px;
+}
+
+.closed{
+    background-color: #FFFFFF;
+    overflow: hidden;
+    max-height: 0px;
+    transition: all 1000ms ease-in;
+}
+
+.opened{
+    background-color: #FFFFFF;
+    transition: all 1000ms ease-out;
+    max-height: 825px;
+}
+
 .inputs {
     width: 70%;
     padding: 15px 18px;
