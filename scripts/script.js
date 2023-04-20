@@ -109,12 +109,7 @@ function shuffle(array) {
   }
 }
 
-const level = {
-    title: "",
-    image: "",
-    text: "",
-    minValue: Number
-};
+
 function addQuizz()  {
   document.querySelector(".home-page").classList.add("hidden");
   document.querySelector(".addQuizz.hidden").classList.remove("hidden");
@@ -212,7 +207,12 @@ function renderUserQuestions(object) {
 }
 
 function renderUserLevel() {
-
+    const level = {
+        title: "",
+        image: "",
+        text: "",
+        minValue: Number
+    };
 }
 
 function toQuestions() {
