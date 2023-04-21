@@ -31,27 +31,28 @@
     color: #000000;
 }
 
-.questions{
-    width: 100%;
+.questions,
+.levels{
+    width: 70%;
     margin: 15px 0px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.questionButton{
+.toggleButton{
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.questionButton button{
+.toggleButton button{
     width: 25px;
     height: 25px;
     border: none;
     background: none;
 }
 
-.questionButton button.ionic-icon{
+.toggleButton button.ionic-icon{
     width: 23px;
     height: 23px;
 }
@@ -91,9 +92,24 @@
     border-radius: 3px;
 }
 
+.inputs textarea{
+    resize: none;
+    width: 100%;
+    margin: 5px 0px;
+    padding: 5px 25px;
+    font-family: 'Roboto', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 19px;
+    color: #BABABA;
+    border: 1px solid #D1D1D1;
+    border-radius: 3px;
+}
+
 .inputs ::-webkit-input-placeholder {
     color: #BABABA;
 }
+
 
 button.submitButton {
     padding: 15px 30px;
