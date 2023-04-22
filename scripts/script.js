@@ -9,10 +9,14 @@ const userQuizz = {
   levels: [],
 };
 
-// Gets user-made quizzes and, if it exists, display it
-function getUserQuizz() { }
+let playedArray = 0;
+let playCounter = 0;
+let correctPlayCounter = 0;
 
-function displayUserQuizz() { }
+// Gets user-made quizzes and, if it exists, display it
+function getUserQuizz() {}
+
+function displayUserQuizz() {}
 
 // Gets quizzes made by third-party stored server-side, and then displays it
 function getAllQuizz() {
@@ -28,23 +32,21 @@ function displayAllQuizz(array) {
 
   for (const entry of array.data) {
     element.innerHTML += `
-        <div class="quizz-container" onclick="displayQuizzPage(${entry.id})">
-            <img src="${entry.image}" />
-            <h3>${entry.title}</h3>
-        </div>
-        `;
+      <div class="quizz-container" onclick="getQuizz(${entry.id})">
+        <img src="${entry.image}" />
+        <h3>${entry.title}</h3>
+      </div>
+      `;
   }
 }
 
-function displayQuizzPage(id) {
+function getQuizz(id) {
   const promise = axios.get(api_url + id);
 
   promise.then(displayQuizz);
+  promise.then(resultGame);
 
-  promise.catch(console.error("bad request displayQuizzPage(id)"));
-
-  document.querySelector(".quizz-page").classList.toggle("hidden");
-  document.querySelector(".home-page").classList.toggle("hidden");
+  promise.catch(console.error("bad request getQuizz()"));
 }
 
 function hideQuizzPage() {
@@ -53,46 +55,139 @@ function hideQuizzPage() {
 
   document.querySelector(".quizz-header").innerHTML = "";
   document.querySelector(".quizz-body").innerHTML = "";
+
+  document.querySelector(".quizz-result").classList.add("hidden");
 }
 
 // Display chosen quizz
 function displayQuizz(array) {
   const element = document.querySelector(".quizz-body");
 
+  const title = document.getElementsByClassName("quizz-title");
+
+  const questionGroup = array.data.questions;
+
   let i = 0;
+
+  let j = 0;
+
+  playedArray = [];
+  playCounter = 0;
+  correctPlayCounter = 0;
+
+  document.querySelector(".quizz-page").classList.toggle("hidden");
+  document.querySelector(".home-page").classList.toggle("hidden");
 
   document.querySelector(".quizz-header").innerHTML = `
     <img src="${array.data.image}" />
     <h2>${array.data.title}</h2>
-    `;
-
-  const questionGroup = array.data.questions;
+  `;
 
   shuffle(questionGroup);
 
   for (const entry of questionGroup) {
-    element.innerHTML += `
-      <div class="quizz-question-container">
-        <div class="quizz-title">${entry.title}</div>
-        <div class="answer-group"></div>
-      </div>
-      `;
-
     const questionContainer = document.getElementsByClassName("answer-group");
 
     const questionItem = entry.answers;
 
+    element.innerHTML += `
+    <div class="quizz-question-container">
+      <div class="quizz-title"><p>${entry.title}</p></div>
+      <div class="answer-group"></div>
+    </div>
+    `;
+
+    title[i].style.backgroundColor = `${entry.color}`;
+
     shuffle(questionItem);
+
+    questionItem.index = i;
+
+    playedArray.push(questionItem);
 
     for (const answer of questionItem) {
       questionContainer[i].innerHTML += `
-            <div class="answer-item" onclick="${answer.isCorrectAnswer}">
-              <img src="${answer.image}" />
-              <h3>${answer.text}</h3>
-            </div>
-            `;
+        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer})">
+          <div class="quizz-image"><img src="${answer.image}" /></div>
+          <h3 class="item-text">${answer.text}</h3>
+        </div>
+        `;
+
+      j++;
     }
+
     i++;
+  }
+}
+
+function playGame(i, j, answer) {
+  const questionContainer = document.getElementsByClassName("answer-group");
+
+  const chosenAnswer = document.getElementsByClassName("answer-item");
+
+  const itemArray = playedArray.find((item) => item.index === i);
+
+  questionContainer[i].innerHTML = "";
+
+  for (const answer of itemArray) {
+    if (answer.isCorrectAnswer === false) {
+      questionContainer[i].innerHTML += `
+        <div class="answer-item">
+          <div class="quizz-image blur"><img src="${answer.image}" /></div>
+          <h3 class="item-text wrong">${answer.text}</h3>
+        </div>
+        `;
+    } else {
+      questionContainer[i].innerHTML += `
+        <div class="answer-item">
+          <div class="quizz-image blur"><img src="${answer.image}" /></div>
+          <h3 class="item-text correct">${answer.text}</h3>
+        </div>
+        `;
+    }
+  }
+
+  chosenAnswer[j].childNodes[1].classList.remove("blur");
+
+  if (answer === true) {
+    correctPlayCounter++;
+  }
+
+  playCounter++;
+
+  resultGameDisplay();
+}
+
+function resultGameDisplay() {
+  if (playCounter === playedArray.length) {
+    document.querySelector(".quizz-result").classList.remove("hidden");
+
+    const result = Math.round(playCounter / correctPlayCounter);
+
+    document.querySelector(".rate").innerText = `${result}% :  `;
+
+    playCounter = 0;
+    correctPlayCounter = 0;
+  }
+}
+
+function resultGame(array) {
+  const result = array.data.levels;
+
+  const element = document.querySelector(".quizz-result");
+
+  element.innerHTML = "";
+
+  for (const entry of result) {
+    element.innerHTML += `
+    <div class="${entry.minValue}">
+      <div class="quizz-result-title"><p class="rate"></p><p>${entry.title}</p></div>
+      <div class="result-container">
+         <div class="result-image"><img src="${entry.image}"></div>
+         <div class="result-text"><p>${entry.text}</p></div>
+       </div>
+    </div>
+    `;
   }
 }
 
@@ -108,11 +203,10 @@ function shuffle(array) {
   }
 }
 
-
 function addQuizz() {
   document.querySelector(".home-page").classList.add("hidden");
   document.querySelector(".addQuizz.hidden").classList.remove("hidden");
-};
+}
 
 /* Função para checar se a URL é valida*/
 function checkUrl(string) {
@@ -129,9 +223,8 @@ function checkUrl(string) {
 /* Função para checar se a cor está em um formato HEX valido*/
 function isHexColor(hex) {
   let isHex = hex.match(/[A-F-0-9]/gi);
-  if (hex[0] === "#" &&
-    isHex.length === 6) {
-    console.log(isHex)
+  if (hex[0] === "#" && isHex.length === 6) {
+    console.log(isHex);
     return true;
   }
   return false;
@@ -142,30 +235,28 @@ function openInput(element) {
   questionOpened.classList.remove("opened");
   questionOpened.classList.add("closed");
   questionOpened.previousElementSibling.innerHTML += `
-    <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
+    <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`;
 
   element.parentNode.nextElementSibling.classList.remove("closed");
   element.parentNode.nextElementSibling.classList.add("opened");
   setTimeout(() => {
-    element.parentElement.parentElement.scrollIntoView({ block: "start" })
+    element.parentElement.parentElement.scrollIntoView({ block: "start" });
   }, 320);
   setTimeout(() => {
     element.remove();
   }, 330);
-
 }
-
 
 function renderUserQuestions(object) {
   let displayStatus = "";
   const questionsFront = document.querySelector(".questionsQuizz > .questions");
-  questionsFront.innerHTML = ""
+  questionsFront.innerHTML = "";
   for (let i = 0; i < object.questions.length; i++) {
     if (i === 0) {
       displayStatus = "opened";
     } else {
       displayStatus = "closed";
-    };
+    }
     questionsFront.innerHTML += `
         <ul data-test="question-ctn" class="question${i + 1} inputs">
           <div class="toggleButton">
@@ -203,24 +294,24 @@ function renderUserQuestions(object) {
             </li>
             <li><input data-test="wrong-img-input" class="wrongImg3" type="text" placeholder="URL da imagem 3" /></li>
           </div>
-        </ul>`
+        </ul>`;
     if (i > 0) {
       questionsFront.querySelector(`.question${i + 1} .closed`).previousElementSibling.innerHTML += `
-            <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
+            <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`;
     }
-  };
+  }
 }
 
 function renderUserLevel(object) {
   let displayStatus = "";
   const levelsFront = document.querySelector(".levelQuizz > .levels");
-  levelsFront.innerHTML = ""
+  levelsFront.innerHTML = "";
   for (let i = 0; i < object.levels.length; i++) {
     if (i === 0) {
       displayStatus = "opened";
     } else {
       displayStatus = "closed";
-    };
+    }
     levelsFront.innerHTML += `
       <ul data-test="level-ctn" class="level${i + 1} inputs">
         <div class="toggleButton">
@@ -241,15 +332,13 @@ function renderUserLevel(object) {
           </li>
         </div>
       </ul>
-      `
+      `;
     if (i > 0) {
       levelsFront.querySelector(`.level${i + 1} .closed`).previousElementSibling.innerHTML += `
-              <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
+              <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`;
     }
   }
 }
-
-
 
 function toQuestions() {
   const inputTitle = document.querySelector(".quizzTitle");
@@ -260,10 +349,14 @@ function toQuestions() {
   const titleFront = document.querySelector(".titleQuizz").classList;
   const questionsFront = document.querySelector(".questionsQuizz.hidden").classList;
 
-  if ((inputTitle.value.length >= 20 && inputTitle.value.length <= 65) &&
-    (checkUrl(inputImg.value)) &&
-    (inputNQuestions.value > 2 && Number.isInteger(Number(inputNQuestions.value))) &&
-    (inputNLevels.value > 1 && Number.isInteger(Number(inputNLevels.value)))
+  if (
+    inputTitle.value.length >= 20 &&
+    inputTitle.value.length <= 65 &&
+    checkUrl(inputImg.value) &&
+    inputNQuestions.value > 2 &&
+    Number.isInteger(Number(inputNQuestions.value)) &&
+    inputNLevels.value > 1 &&
+    Number.isInteger(Number(inputNLevels.value))
   ) {
     userQuizz.title = inputTitle.value;
     userQuizz.image = inputImg.value;
@@ -289,56 +382,52 @@ function toQuestions() {
 }
 
 function toLevels() {
-
   for (let i = 0; i < userQuizz.questions.length; i++) {
     let question = {
       title: "",
       color: "",
-      answers: []
+      answers: [],
     };
 
     const inputQuestion = document.querySelector(`.question${i + 1} .textQuestion`);
     const inputColor = document.querySelector(`.question${i + 1} .colorQuestion`);
 
-    if (inputQuestion.value.length >= 20 &&
-      isHexColor(inputColor.value)) {
+    if (inputQuestion.value.length >= 20 && isHexColor(inputColor.value)) {
       question.title = inputQuestion.value;
       question.color = inputColor.value;
     } else {
-      alert("Por favor preencha os dados corretamente.")
+      alert("Por favor preencha os dados corretamente.");
       inputQuestion.value = "";
       inputColor.value = "";
-      return
+      return;
     }
 
     const inputCorrectAnswer = document.querySelector(`.question${i + 1} .correctAnswer`);
     const inputCorrectImg = document.querySelector(`.question${i + 1} .correctImg`);
 
-    if (inputCorrectAnswer.value !== "" &&
-      (checkUrl(inputCorrectImg.value))) {
+    if (inputCorrectAnswer.value !== "" && checkUrl(inputCorrectImg.value)) {
       let answer = {};
       answer.text = inputCorrectAnswer.value;
       answer.image = inputCorrectImg.value;
       answer.isCorrectAnswer = true;
       question.answers.push(answer);
     } else {
-      alert("Por favor preencha os dados corretamente.")
+      alert("Por favor preencha os dados corretamente.");
       inputCorrectAnswer.value = "";
       inputCorrectImg.value = "";
-      return
+      return;
     }
     for (let k = 1; k < 4; k++) {
       const inputWrongAnswer = document.querySelector(`.question${i + 1} .wrongAnswer${k}`);
       const inputWrongImg = document.querySelector(`.question${i + 1} .wrongImg${k}`);
-      if (inputWrongAnswer.value !== "" &&
-        (checkUrl(inputWrongImg.value))) {
+      if (inputWrongAnswer.value !== "" && checkUrl(inputWrongImg.value)) {
         let answer = {};
         answer.text = inputWrongAnswer.value;
         answer.image = inputWrongImg.value;
         answer.isCorrectAnswer = false;
         question.answers.push(answer);
       } else if (k === 1) {
-        alert("Por favor preencha os dados corretamente.")
+        alert("Por favor preencha os dados corretamente.");
         inputWrongAnswer.value = "";
         inputWrongImg.value = "";
         return;
@@ -346,12 +435,12 @@ function toLevels() {
     }
     userQuizz.questions[i] = question;
   }
-  console.log(userQuizz)
+  console.log(userQuizz);
   const questionsFront = document.querySelector(".questionsQuizz").classList;
   const levelFront = document.querySelector(".levelQuizz.hidden").classList;
   questionsFront.add("hidden");
   levelFront.remove("hidden");
-  renderUserLevel(userQuizz)
+  renderUserLevel(userQuizz);
 }
 
 function toSend() {
@@ -361,7 +450,7 @@ function toSend() {
       title: "",
       image: "",
       text: "",
-      minValue: Number
+      minValue: Number,
     };
 
     const inputLevel = document.querySelector(`.level${i + 1} .textLevel`);
@@ -369,40 +458,43 @@ function toSend() {
     const inputImgLevel = document.querySelector(`.level${i + 1} .imgLevel`);
     const inputDescriptionLevel = document.querySelector(`.level${i + 1} .descriptionLevel`);
 
-    if(Number(inputPercent.value) === 0){
+    if (Number(inputPercent.value) === 0) {
       check = 1;
     }
 
-    if (inputLevel.value.length >= 0 &&
-      (inputPercent.value.length >= 0 && inputPercent.value.length <= 100) &&
-      (checkUrl(inputImgLevel.value)) &&
+    if (
+      inputLevel.value.length >= 0 &&
+      inputPercent.value.length >= 0 &&
+      inputPercent.value.length <= 100 &&
+      checkUrl(inputImgLevel.value) &&
       inputDescriptionLevel.value.length >= 30
-    ) {level.title = inputLevel.value
-      level.image = inputImgLevel.value
-      level.text = inputDescriptionLevel.value
-      level.minValue = inputPercent.value
-    }else {
-      alert("Por favor preencha os dados corretamente.")
+    ) {
+      level.title = inputLevel.value;
+      level.image = inputImgLevel.value;
+      level.text = inputDescriptionLevel.value;
+      level.minValue = inputPercent.value;
+    } else {
+      alert("Por favor preencha os dados corretamente.");
       inputLevel.value = "";
       inputPercent.value = "";
       inputImgLevel.value = "";
       inputDescriptionLevel.value = "";
-      return
+      return;
     }
     userQuizz.levels[i] = level;
-    if(i === (userQuizz.levels.length-1) && check === 0){
-      alert("Por favor preencha os dados corretamente.")
+    if (i === userQuizz.levels.length - 1 && check === 0) {
+      alert("Por favor preencha os dados corretamente.");
       inputLevel.value = "";
       inputPercent.value = "";
       inputImgLevel.value = "";
       inputDescriptionLevel.value = "";
-      return
+      return;
     }
   }
-  const sendQuizPromise = axios.post(api_url,userQuizz)
+  const sendQuizPromise = axios.post(api_url, userQuizz);
 
   sendQuizPromise.then();
-  
+
   sendQuizPromise.catch();
 }
 
