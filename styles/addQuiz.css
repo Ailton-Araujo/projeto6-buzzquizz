@@ -1,4 +1,3 @@
-
 .addQuiz {
     width: 100%;
     height: 100%;
@@ -12,7 +11,6 @@
     width: 100%;
     height: 100%;
     padding-top: 120px;
-    background-color: #FAFAFA;
     font-weight: 700;
     font-size: 23px;
     line-height: 27px;
@@ -21,6 +19,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    position: relative;
 }
 
 .questionsQuizz h3,
@@ -32,7 +31,7 @@
 }
 
 .questions,
-.levels{
+.levels {
     width: 70%;
     margin: 15px 0px;
     display: flex;
@@ -40,31 +39,32 @@
     align-items: center;
 }
 
-.toggleButton{
+.toggleButton {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-.toggleButton button{
+
+.toggleButton button {
     width: 25px;
     height: 25px;
     border: none;
     background: none;
 }
 
-.toggleButton button.ionic-icon{
+.toggleButton button.ionic-icon {
     width: 23px;
     height: 23px;
 }
 
-.closed{
+.closed {
     background-color: #FFFFFF;
     overflow: hidden;
     max-height: 0px;
     transition: all 300ms ease-in;
 }
 
-.opened{
+.opened {
     background-color: #FFFFFF;
     transition: all 900ms ease-out;
     max-height: 825px;
@@ -78,7 +78,7 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.05);
 }
 
-.inputs input{
+.inputs input {
     width: 100%;
     height: 46px;
     margin: 5px 0px;
@@ -92,7 +92,7 @@
     border-radius: 3px;
 }
 
-.inputs textarea{
+.inputs textarea {
     resize: none;
     width: 100%;
     margin: 5px 0px;
@@ -125,9 +125,67 @@ button.submitButton {
     border-radius: 15px;
 }
 
-span.space{
+button.toHome {
+    border: none;
+    background-color: #FAFAFA;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 25px;
+    color: #818181;
+}
+
+span.space {
     border: 0.5px solid #FFFFFF;
 }
+
+.userSendQuizz {
+    height: 374px;
+    max-width: 1051px;
+    width: 100%;
+    gap: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.userQuizzContainer {
+    width: 500px;
+    height: 266px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%,
+            rgba(0, 0, 0, 0.5) 64.58%, #000000 100%);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.userSendQuizz img {
+    width: 500px;
+    height: 266px;
+    border-radius: 5px;
+    object-fit: cover;
+    position: absolute;
+    z-index: -1;
+}
+
+.userSendQuizz h3 {
+    max-width: 301px;
+    padding-top: 100px;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 22px;
+    color: #ffffff;
+    position: absolute;
+}
+
+
+
+
+
 
 .hidden {
     display: none;

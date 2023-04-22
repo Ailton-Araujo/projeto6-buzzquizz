@@ -9,6 +9,8 @@ const userQuizz = {
   levels: [],
 };
 
+let userQuizzAdress = [];
+
 // Gets user-made quizzes and, if it exists, display it
 function getUserQuizz() { }
 
@@ -24,6 +26,9 @@ function getAllQuizz() {
 }
 
 function displayAllQuizz(array) {
+  localQuizzesString= localStorage.getItem("quizzes");
+  localQuizzes = JSON.parse(localQuizzesString);
+  console.log(localQuizzes)
   const element = document.querySelector(".all-quizz");
 
   for (const entry of array.data) {
@@ -45,6 +50,17 @@ function displayQuizzPage(id) {
 
   document.querySelector(".quizz-page").classList.toggle("hidden");
   document.querySelector(".home-page").classList.toggle("hidden");
+}
+
+function displayQuizzUserPage(id) {
+  const promise = axios.get(api_url + id);
+
+  promise.then(displayQuizz);
+
+  promise.catch(console.error("bad request displayQuizzPage(id)"));
+
+  document.querySelector(".sendQuizz").classList.toggle("hidden");
+  document.querySelector(".quizz-page").classList.toggle("hidden");
 }
 
 function hideQuizzPage() {
@@ -131,47 +147,54 @@ function isHexColor(hex) {
   let isHex = hex.match(/[A-F-0-9]/gi);
   if (hex[0] === "#" &&
     isHex.length === 6) {
-    console.log(isHex)
     return true;
   }
   return false;
 }
 
 function openInput(element) {
-  let questionOpened = document.querySelector(".opened");
-  questionOpened.classList.remove("opened");
-  questionOpened.classList.add("closed");
-  questionOpened.previousElementSibling.innerHTML += `
-    <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
+  if(element.classList.contains("questionPage")){
+    let questionOpened = document.querySelector(".questions .opened");
+    questionOpened.classList.add("closed");
+    questionOpened.classList.remove("opened");
+    questionOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
+
+  }else if(element.classList.contains("levelPage")){
+    let levelOpened = document.querySelector(".levels .opened");
+    levelOpened.classList.add("closed");
+    levelOpened.classList.remove("opened");
+    levelOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
+  }
 
   element.parentNode.nextElementSibling.classList.remove("closed");
   element.parentNode.nextElementSibling.classList.add("opened");
   setTimeout(() => {
-    element.parentElement.parentElement.scrollIntoView({ block: "start" })
+    element.parentElement.parentElement.scrollIntoView({ block: "start" });
   }, 320);
-  setTimeout(() => {
-    element.remove();
-  }, 330);
-
+    element.classList.toggle("hidden");
 }
 
-
 function renderUserQuestions(object) {
-  let displayStatus = "";
+  let displayQuestion = "";
+  let displayButton = "";
   const questionsFront = document.querySelector(".questionsQuizz > .questions");
   questionsFront.innerHTML = ""
   for (let i = 0; i < object.questions.length; i++) {
+
     if (i === 0) {
-      displayStatus = "opened";
+      displayQuestion = "opened";
+      displayButton = "hidden"
     } else {
-      displayStatus = "closed";
+      displayQuestion = "closed";
+      displayButton = ""
     };
     questionsFront.innerHTML += `
         <ul data-test="question-ctn" class="question${i + 1} inputs">
           <div class="toggleButton">
             <h3>Pergunta ${i + 1}</h3>
+            <button data-test="toggle" class="${displayButton} questionPage" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>
             </div>
-            <div class="${displayStatus}">
+            <div class="${displayQuestion}">
             <span class="space"></span>
             <li><input data-test="question-input" class="textQuestion" type="text" placeholder="Texto da pergunta" /></li>
             <li><input data-test="question-color-input" class="colorQuestion" type="text"
@@ -204,29 +227,29 @@ function renderUserQuestions(object) {
             <li><input data-test="wrong-img-input" class="wrongImg3" type="text" placeholder="URL da imagem 3" /></li>
           </div>
         </ul>`
-    if (i > 0) {
-      questionsFront.querySelector(`.question${i + 1} .closed`).previousElementSibling.innerHTML += `
-            <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
-    }
   };
 }
 
 function renderUserLevel(object) {
-  let displayStatus = "";
+  let displayLevel = "";
+  let displayButton = "";
   const levelsFront = document.querySelector(".levelQuizz > .levels");
   levelsFront.innerHTML = ""
   for (let i = 0; i < object.levels.length; i++) {
     if (i === 0) {
-      displayStatus = "opened";
+      displayLevel = "opened";
+      displayButton = "hidden"
     } else {
-      displayStatus = "closed";
+      displayLevel = "closed";
+      displayButton = "";
     };
     levelsFront.innerHTML += `
       <ul data-test="level-ctn" class="level${i + 1} inputs">
         <div class="toggleButton">
           <h3>Nível ${i + 1}</h3>
+          <button data-test="toggle" class="${displayButton} levelPage" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>
         </div>
-        <div class="${displayStatus}">
+        <div class="${displayLevel}">
           <span class="space"></span>
           <li><input data-test="level-input" class="textLevel" type="text" placeholder="Título do nível" />
           </li>
@@ -242,14 +265,27 @@ function renderUserLevel(object) {
         </div>
       </ul>
       `
-    if (i > 0) {
-      levelsFront.querySelector(`.level${i + 1} .closed`).previousElementSibling.innerHTML += `
-              <button data-test="toggle" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>`
-    }
   }
 }
 
+function renderSenderLevel(object){
+  promiseQuizz = axios.get(api_url + object.id)
 
+  promiseQuizz.then((response)=>{
+    const element = document.querySelector(".userSendQuizz");
+    element.innerHTML= "";
+    element.innerHTML += `
+    <div data-test="success-banner" id="${response.data.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${response.data.id})">
+        <img src="${response.data.image}" />
+        <h3>${response.data.title}</h3>
+    </div>
+    `;
+  })
+
+  promiseQuizz.catch((response)=>{
+    console.log(response)
+  })
+}
 
 function toQuestions() {
   const inputTitle = document.querySelector(".quizzTitle");
@@ -289,6 +325,8 @@ function toQuestions() {
 }
 
 function toLevels() {
+  const questionsFront = document.querySelector(".questionsQuizz").classList;
+  const levelsFront = document.querySelector(".levelQuizz.hidden").classList;
 
   for (let i = 0; i < userQuizz.questions.length; i++) {
     let question = {
@@ -304,6 +342,9 @@ function toLevels() {
       isHexColor(inputColor.value)) {
       question.title = inputQuestion.value;
       question.color = inputColor.value;
+
+      inputQuestion.value = "";
+      inputColor.value = "";
     } else {
       alert("Por favor preencha os dados corretamente.")
       inputQuestion.value = "";
@@ -321,6 +362,8 @@ function toLevels() {
       answer.image = inputCorrectImg.value;
       answer.isCorrectAnswer = true;
       question.answers.push(answer);
+      inputCorrectAnswer.value = "";
+      inputCorrectImg.value = "";
     } else {
       alert("Por favor preencha os dados corretamente.")
       inputCorrectAnswer.value = "";
@@ -337,6 +380,8 @@ function toLevels() {
         answer.image = inputWrongImg.value;
         answer.isCorrectAnswer = false;
         question.answers.push(answer);
+        inputCorrectAnswer.value = "";
+        inputCorrectImg.value = "";
       } else if (k === 1) {
         alert("Por favor preencha os dados corretamente.")
         inputWrongAnswer.value = "";
@@ -346,15 +391,16 @@ function toLevels() {
     }
     userQuizz.questions[i] = question;
   }
-  console.log(userQuizz)
-  const questionsFront = document.querySelector(".questionsQuizz").classList;
-  const levelFront = document.querySelector(".levelQuizz.hidden").classList;
+
   questionsFront.add("hidden");
-  levelFront.remove("hidden");
+  levelsFront.remove("hidden");
   renderUserLevel(userQuizz)
 }
 
 function toSend() {
+  const levelsFront = document.querySelector(".levelQuizz").classList;
+  const sendFront = document.querySelector(".sendQuizz.hidden").classList;
+
   let check = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
@@ -369,7 +415,7 @@ function toSend() {
     const inputImgLevel = document.querySelector(`.level${i + 1} .imgLevel`);
     const inputDescriptionLevel = document.querySelector(`.level${i + 1} .descriptionLevel`);
 
-    if(Number(inputPercent.value) === 0){
+    if (Number(inputPercent.value) === 0) {
       check = 1;
     }
 
@@ -377,11 +423,17 @@ function toSend() {
       (inputPercent.value.length >= 0 && inputPercent.value.length <= 100) &&
       (checkUrl(inputImgLevel.value)) &&
       inputDescriptionLevel.value.length >= 30
-    ) {level.title = inputLevel.value
+    ) {
+      level.title = inputLevel.value
       level.image = inputImgLevel.value
       level.text = inputDescriptionLevel.value
       level.minValue = inputPercent.value
-    }else {
+
+      inputLevel.value = "";
+      inputPercent.value = "";
+      inputImgLevel.value = "";
+      inputDescriptionLevel.value = "";
+    } else {
       alert("Por favor preencha os dados corretamente.")
       inputLevel.value = "";
       inputPercent.value = "";
@@ -390,7 +442,7 @@ function toSend() {
       return
     }
     userQuizz.levels[i] = level;
-    if(i === (userQuizz.levels.length-1) && check === 0){
+    if (i === (userQuizz.levels.length - 1) && check === 0) {
       alert("Por favor preencha os dados corretamente.")
       inputLevel.value = "";
       inputPercent.value = "";
@@ -399,12 +451,43 @@ function toSend() {
       return
     }
   }
-  const sendQuizPromise = axios.post(api_url,userQuizz)
+  const sendQuizPromise = axios.post(api_url, userQuizz)
 
-  sendQuizPromise.then();
-  
+  sendQuizPromise.then((response) => {
+    let quizzData = {
+      id: "",
+      key: ""
+    };
+
+    quizzData.id = response.data.id
+    quizzData.key = response.data.key
+
+    userQuizzAdress.push(quizzData)
+    let localQuizzArdress = JSON.stringify(userQuizzAdress)
+    localStorage.setItem("quizzes", localQuizzArdress)
+
+    levelsFront.add("hidden");
+    sendFront.remove("hidden");
+
+    renderSenderLevel(quizzData)
+  });
+
   sendQuizPromise.catch();
 }
+
+function toQuizz(){
+  let quizzID = document.querySelector(".userQuizzContainer").id;
+  displayQuizzUserPage(quizzID);
+}
+let test={
+  id:139
+}
+
+function toHome(){
+  window.location.reload()
+}
+renderSenderLevel(test)
+
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();

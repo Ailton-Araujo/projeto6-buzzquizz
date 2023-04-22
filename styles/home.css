@@ -106,7 +106,7 @@ button.noUserQuizz {
   color: #000000;
 }
 
-.all-quizz {
+.all-quizz{
   height: 374px;
   max-width: 1051px;
   width: 100%;
@@ -127,7 +127,7 @@ button.noUserQuizz {
   align-items: center;
 }
 
-.all-quizz img {
+.all-quizz img{
   height: 181px;
   width: 340px;
   border-radius: 5px;
@@ -136,7 +136,7 @@ button.noUserQuizz {
   z-index: -1;
 }
 
-.all-quizz h3 {
+.all-quizz h3{
   max-width: 301px;
   padding-top: 100px;
   font-style: normal;
