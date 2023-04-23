@@ -145,8 +145,8 @@ function displayQuizz(array) {
     const questionItem = entry.answers;
 
     element.innerHTML += `
-    <div class="quizz-question-container">
-      <div class="quizz-title"><p>${entry.title}</p></div>
+    <div class="quizz-question-container" data-test="question">
+      <div class="quizz-title" data-test="question-title"><p>${entry.title}</p></div>
       <div class="answer-group"></div>
     </div>
     `;
@@ -161,9 +161,9 @@ function displayQuizz(array) {
 
     for (const answer of questionItem) {
       questionContainer[i].innerHTML += `
-        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer})">
+        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer})" data-test='answer'>
           <div class="quizz-image"><img src="${answer.image}" /></div>
-          <h3 class="item-text">${answer.text}</h3>
+          <h3 class="item-text" data-test="answer-text">${answer.text}</h3>
         </div>
         `;
 
@@ -186,16 +186,16 @@ function playGame(i, j, answer) {
   for (const answer of itemArray) {
     if (answer.isCorrectAnswer === false) {
       questionContainer[i].innerHTML += `
-        <div class="answer-item">
+        <div class="answer-item" data-test="answer">
           <div class="quizz-image blur"><img src="${answer.image}" /></div>
-          <h3 class="item-text wrong">${answer.text}</h3>
+          <h3 class="item-text wrong" data-test="answer-text">${answer.text}</h3>
         </div>
         `;
     } else {
       questionContainer[i].innerHTML += `
-        <div class="answer-item">
+        <div class="answer-item" data-test="answer">
           <div class="quizz-image blur"><img src="${answer.image}" /></div>
-          <h3 class="item-text correct">${answer.text}</h3>
+          <h3 class="item-text correct" data-test="answer-text">${answer.text}</h3>
         </div>
         `;
     }
@@ -263,10 +263,10 @@ function resultGame(array) {
     if (index == i) {
       element.innerHTML += `
     <div>
-      <div class="quizz-result-title"><p>${accuracy}% de acerto: ${entry.title}</p></div>
+      <div class="quizz-result-title" data-test="level-title"><p>${accuracy}% de acerto: ${entry.title}</p></div>
       <div class="result-container">
-         <div class="result-image"><img src="${entry.image}"></div>
-         <div class="result-text"><p>${entry.text}</p></div>
+         <div class="result-image" data-test="level-img"><img src="${entry.image}"></div>
+         <div class="result-text" data-test="level-text"><p>${entry.text}</p></div>
        </div>
     </div>
     `;
