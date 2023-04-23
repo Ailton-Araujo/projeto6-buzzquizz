@@ -267,21 +267,21 @@ function isHexColor(hex) {
 function openInput(element) {
   if (element.classList.contains("questionPage")) {
     let questionOpened = document.querySelector(".questions .opened");
-    questionOpened.classList.add("closed");
+
     questionOpened.classList.add("hidden");
     questionOpened.classList.remove("opened");
     questionOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
 
   } else if (element.classList.contains("levelPage")) {
     let levelOpened = document.querySelector(".levels .opened");
-    levelOpened.classList.add("closed");
+
     questionOpened.classList.add("hidden");
     levelOpened.classList.remove("opened");
     levelOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
   }
 
   element.parentNode.nextElementSibling.classList.remove("hidden");
-  element.parentNode.nextElementSibling.classList.remove("closed");
+
   element.parentNode.nextElementSibling.classList.add("opened");;
 
   element.parentElement.parentElement.scrollIntoView({ block: "start" });
@@ -299,7 +299,7 @@ function renderUserQuestions(object) {
       displayQuestion = "opened";
       displayButton = "hidden"
     } else {
-      displayQuestion = "closed hidden";
+      displayQuestion = "hidden";
       displayButton = ""
     };
     questionsFront.innerHTML += `
@@ -354,7 +354,7 @@ function renderUserLevel(object) {
       displayLevel = "opened";
       displayButton = "hidden"
     } else {
-      displayLevel = "closed hidden";
+      displayLevel = "hidden";
       displayButton = "";
     };
     levelsFront.innerHTML += `
