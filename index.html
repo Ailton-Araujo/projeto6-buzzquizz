@@ -41,14 +41,14 @@
       </section>
 
       <section class="quizz-page hidden">
-        <div class="quizz-header"></div>
+        <div class="quizz-header" data-test="banner"></div>
         <div class="quizz-body"></div>
         <div class="quizz-result hidden">
 
         </div>
         <div class="quizz-exit">
-          <button id="reset-button" onclick="getQuizz(chosenQuizzId)">Reiniciar Quizz</button>
-          <button id="home-button" onclick="hideQuizzPage()">Voltar para home</button>
+          <button id="reset-button" onclick="getQuizz(chosenQuizzId)" data-test="restart">Reiniciar Quizz</button>
+          <button id="home-button" onclick="hideQuizzPage()" data-test="go-home">Voltar para home</button>
         </div>
       </section>
 
