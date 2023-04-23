@@ -105,17 +105,25 @@ function displayQuizzUserPage(id) {
 }
 
 function hideQuizzPage() {
-  document.querySelector(".home-page").classList.toggle("hidden");
-  document.querySelector(".quizz-page").classList.toggle("hidden");
-
-  document.querySelector(".quizz-header").innerHTML = "";
-  document.querySelector(".quizz-body").innerHTML = "";
+  document.querySelector(".home-page").classList.remove("hidden");
+  document.querySelector(".quizz-page").classList.add("hidden");
 
   document.querySelector(".quizz-result").classList.add("hidden");
+
+  chosenQuizzId = null;
 }
 
 // Display chosen quizz
 function displayQuizz(array) {
+  window.scrollTo(0, 0);
+
+  document.querySelector(".quizz-page").classList.remove("hidden");
+  document.querySelector(".home-page").classList.add("hidden");
+  document.querySelector(".quizz-result").classList.add("hidden");
+
+  document.querySelector(".quizz-header").innerHTML = "";
+  document.querySelector(".quizz-body").innerHTML = "";
+
   const element = document.querySelector(".quizz-body");
 
   const title = document.getElementsByClassName("quizz-title");
@@ -129,9 +137,6 @@ function displayQuizz(array) {
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
-
-  document.querySelector(".quizz-page").classList.toggle("hidden");
-  document.querySelector(".home-page").classList.toggle("hidden");
 
   document.querySelector(".quizz-header").innerHTML = `
     <img src="${array.data.image}" />
@@ -227,7 +232,6 @@ function resultGameDisplay() {
 
     playCounter = 0;
     correctPlayCounter = 0;
-    chosenQuizzId = null;
   }
 }
 
@@ -252,15 +256,20 @@ function resultGame(array) {
 
   let index = binarySearch(newArray, accuracy);
 
-  if (index[0] === -1) {
+  if (index[0] == -1) {
+    index = [0];
+  } else if (accuracy == 0) {
     index = [0];
   }
+
+  console.log(index);
+  console.log(resultArrayOrdered);
 
   for (const entry of resultArrayOrdered) {
     if (index == i) {
       element.innerHTML += `
     <div>
-      <div class="quizz-result-title"><p class="accuracy">${accuracy}% de acerto:</p><p>&nbsp;${entry.title}</p></div>
+      <div class="quizz-result-title"><p>${accuracy}% de acerto: ${entry.title}</p></div>
       <div class="result-container">
          <div class="result-image"><img src="${entry.image}"></div>
          <div class="result-text"><p>${entry.text}</p></div>
@@ -344,7 +353,7 @@ function openInput(element) {
 
   element.parentNode.nextElementSibling.classList.remove("hidden");
 
-  element.parentNode.nextElementSibling.classList.add("opened");;
+  element.parentNode.nextElementSibling.classList.add("opened");
 
   element.parentElement.parentElement.scrollIntoView({ block: "start" });
   element.classList.toggle("hidden");
@@ -361,8 +370,8 @@ function renderUserQuestions(object) {
       displayButton = "hidden";
     } else {
       displayQuestion = "hidden";
-      displayButton = ""
-    };
+      displayButton = "";
+    }
     questionsFront.innerHTML += `
         <ul data-test="question-ctn" class="question${i + 1} inputs">
           <div class="toggleButton">
