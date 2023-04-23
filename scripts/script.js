@@ -2,6 +2,7 @@ axios.defaults.headers.common["Authorization"] = "crOAxtb2nvt4HvqrTlUr9bKq";
 
 const api_url = "https://mock-api.driven.com.br/api/vm/buzzquizz/quizzes/";
 
+
 const userQuizz = {
   title: "",
   image: "",
@@ -17,10 +18,15 @@ let chosenQuizzId, accuracy;
 
 let userQuizzAdress = [];
 
-// Gets user-made quizzes and, if it exists, display it
-function getUserQuizz() {}
+let localQuizzesString = localStorage.getItem("quizzes");
+if (localQuizzesString !== null) {
+  userQuizzAdress = JSON.parse(localQuizzesString);
+}
 
-function displayUserQuizz() {}
+// Gets user-made quizzes and, if it exists, display it
+function getUserQuizz() { }
+
+function displayUserQuizz() { }
 
 // Gets quizzes made by third-party stored server-side, and then displays it
 function getAllQuizz() {
@@ -34,19 +40,46 @@ function getAllQuizz() {
   });
 }
 
+let test
 function displayAllQuizz(array) {
-  localQuizzesString = localStorage.getItem("quizzes");
-  localQuizzes = JSON.parse(localQuizzesString);
+  test = array.data
+  const elementUser = document.querySelector(".add-quizz");
+  const elementAll = document.querySelector(".all-quizz");
+  elementUser.innerHTML = ""
+  elementAll.innerHTML = ""
 
-  const element = document.querySelector(".all-quizz");
-
-  for (const entry of array.data) {
-    element.innerHTML += `
-      <div class="quizz-container" onclick="getQuizz(${entry.id})">
-        <img src="${entry.image}" />
-        <h3>${entry.title}</h3>
+  let temp = 0;
+  for (let i = 0; i < array.data.length; i++) {
+    let check = 0;
+    if (userQuizzAdress[check] !== undefined) {
+      for (let j = 0; j < userQuizzAdress.length; j++) {
+        if (array.data[i].id === userQuizzAdress[j].id) {
+          elementUser.innerHTML += `
+        <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
+          <img src="${array.data[i].image}" />
+          <h3>${array.data[i].title}</h3>
+        </div>
+        `;
+          temp++;
+          check = 1;
+          i++
+        }
+      }
+    }
+    if (temp === 1) {
+      elementUser.parentElement.classList.add("user-quizz-Used")
+      elementUser.parentElement.classList.remove("user-quizz")
+      elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
+      elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
+      elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
+    } else if (check === 0) {
+      elementAll.innerHTML += `
+      <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
+        <img src="${array.data[i].image}" />
+        <h3>${array.data[i].title}</h3>
       </div>
       `;
+    }
   }
 }
 
@@ -304,7 +337,7 @@ function openInput(element) {
   } else if (element.classList.contains("levelPage")) {
     let levelOpened = document.querySelector(".levels .opened");
 
-    questionOpened.classList.add("hidden");
+    levelOpened.classList.add("hidden");
     levelOpened.classList.remove("opened");
     levelOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
   }
@@ -608,6 +641,7 @@ function toSend() {
     quizzData.key = response.data.key;
 
     userQuizzAdress.push(quizzData);
+
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
 
