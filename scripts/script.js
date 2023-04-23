@@ -23,7 +23,7 @@ function getAllQuizz() {
 
   promise.then(displayAllQuizz);
 
-  promise.catch((response)=>{
+  promise.catch((response) => {
     console.log(response)
   });
 }
@@ -53,13 +53,13 @@ function displayAllQuizz(array) {
       </div>
       `;
   }
-if(temp === 1){
-  elementUser.parentElement.classList.add("user-quizz-Used")
-  elementUser.parentElement.classList.remove("user-quizz")
-  elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
-  elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
-  elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
-}
+  if (temp === 1) {
+    elementUser.parentElement.classList.add("user-quizz-Used")
+    elementUser.parentElement.classList.remove("user-quizz")
+    elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
+    elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
+    elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
+  }
 
 }
 
@@ -281,10 +281,9 @@ function openInput(element) {
   }
 
   element.parentNode.nextElementSibling.classList.remove("hidden");
-  setTimeout(()=>{
-    element.parentNode.nextElementSibling.classList.remove("closed");
-    element.parentNode.nextElementSibling.classList.add("opened");;
-  },10);
+  element.parentNode.nextElementSibling.classList.remove("closed");
+  element.parentNode.nextElementSibling.classList.add("opened");;
+
   element.parentElement.parentElement.scrollIntoView({ block: "start" });
   element.classList.toggle("hidden");
 }
