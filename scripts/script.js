@@ -25,6 +25,7 @@ if (localQuizzesString !== null) {
 
 // Gets user-made quizzes and, if it exists, display it
 // Gets quizzes made by third-party stored server-side, and then displays it
+
 function getAllQuizz() {
   const promise = axios.get(api_url);
 
@@ -600,9 +601,8 @@ function toSend() {
 
     if (
       inputLevel.value.length >= 10 &&
-      inputLevel.value.length <= 100 && 
-      inputPercent.value.length >= 0 &&
-      inputPercent.value.length <= 100 &&
+      Number(inputPercent.value) >= 0 &&
+      Number(inputPercent.value) <= 100 &&
       checkUrl(inputImgLevel.value) &&
       inputDescriptionLevel.value.length >= 30
     ) {
@@ -669,4 +669,4 @@ function toHome() {
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
-});
+})
