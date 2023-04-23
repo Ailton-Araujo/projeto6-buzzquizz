@@ -445,15 +445,35 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object,object2) {
+function renderSenderLevel(object) {
+
+  const sendQuizPromise = axios.post(api_url, object);
+
+  sendQuizPromise.then((response) => {
+    let quizzData = {
+      id: "",
+      key: "",
+    };
+
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
+
+    userQuizzAdress.push(quizzData);
+
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
+
     const element = document.querySelector(".userSendQuizz");
     element.innerHTML = "";
     element.innerHTML += `
-    <div id="${object2.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${object2.id})">
+    <div data-test="success-banner" id="${quizzData.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${quizzData.id})">
         <img src="${object.image}" />
         <h3>${object.title}</h3>
     </div>
     `;
+  });
+
+  sendQuizPromise.catch();
 }
 
 function toQuestions() {
@@ -628,29 +648,11 @@ function toSend() {
       return;
     }
   }
-  const sendQuizPromise = axios.post(api_url, userQuizz);
 
-  sendQuizPromise.then((response) => {
-    let quizzData = {
-      id: "",
-      key: "",
-    };
+  levelsFront.add("hidden");
+  sendFront.remove("hidden");
 
-    quizzData.id = response.data.id;
-    quizzData.key = response.data.key;
-
-    userQuizzAdress.push(quizzData);
-
-    let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
-
-    levelsFront.add("hidden");
-    sendFront.remove("hidden");
-
-    renderSenderLevel(userQuizz,quizzData);
-  });
-
-  sendQuizPromise.catch();
+  renderSenderLevel(userQuizz);
 }
 
 function toQuizz() {
