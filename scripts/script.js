@@ -475,6 +475,16 @@ function renderUserLevel(object) {
 }
 
 function renderSenderLevel(object) {
+  
+  const element = document.querySelector(".userSendQuizz");
+  element.innerHTML = "";
+  element.innerHTML += `
+  <div data-test="success-banner" id="placeHolder" class="userQuizzContainer" onclick="">
+      <img src="${object.image}" />
+      <h3>${object.title}</h3>
+  </div>
+  `;
+
 
   const sendQuizPromise = axios.post(api_url, object);
 
@@ -483,23 +493,15 @@ function renderSenderLevel(object) {
       id: "",
       key: "",
     };
-
+    const quizzSucess = document.getElementById("placeHolder");
+    quizzSucess.id = response.data.id;
+    quizzSucess.onclick= function(){ displayQuizzUserPage(response.data.id); } 
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
-
     userQuizzAdress.push(quizzData);
 
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
-
-    const element = document.querySelector(".userSendQuizz");
-    element.innerHTML = "";
-    element.innerHTML += `
-    <div data-test="success-banner" id="${quizzData.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${quizzData.id})">
-        <img src="${object.image}" />
-        <h3>${object.title}</h3>
-    </div>
-    `;
   });
 
   sendQuizPromise.catch();
