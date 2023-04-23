@@ -2,6 +2,11 @@ axios.defaults.headers.common["Authorization"] = "crOAxtb2nvt4HvqrTlUr9bKq";
 
 const api_url = "https://mock-api.driven.com.br/api/vm/buzzquizz/quizzes/";
 
+let playedArray = 0;
+let playCounter = 0;
+let correctPlayCounter = 0;
+
+let chosenQuizzId, accuracy;
 
 const userQuizz = {
   title: "",
@@ -9,12 +14,6 @@ const userQuizz = {
   questions: [],
   levels: [],
 };
-
-let playedArray = 0;
-let playCounter = 0;
-let correctPlayCounter = 0;
-
-let chosenQuizzId, accuracy;
 
 let userQuizzAdress = [];
 
@@ -42,11 +41,10 @@ function displayAllQuizz(array) {
   const elementAll = document.querySelector(".all-quizz");
   elementUser.innerHTML = "";
   elementAll.innerHTML = "";
-
   let temp = 0;
   for (let i = 0; i < array.data.length; i++) {
-    let check = 0;
-    if (userQuizzAdress[check] !== undefined) {
+    let temp2 = 0;
+    if (userQuizzAdress[temp2] !== undefined) {
       for (let j = 0; j < userQuizzAdress.length; j++) {
         if (array.data[i].id === userQuizzAdress[j].id) {
           elementUser.innerHTML += `
@@ -56,18 +54,18 @@ function displayAllQuizz(array) {
         </div>
         `;
           temp++;
-          check = 1;
+          temp2 = 1;
           i++
         }
       }
     }
-    if (temp === 1) {
+    if (temp === 1 && temp2 === 1) {
       elementUser.parentElement.classList.add("user-quizz-Used");
       elementUser.parentElement.classList.remove("user-quizz");
       elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
       elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
       elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
-    } else if (check === 0) {
+    } else if (temp2 === 0) {
       elementAll.innerHTML += `
       <div data-test="others-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
         <img src="${array.data[i].image}" />
@@ -447,26 +445,23 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object) {
-  promiseQuizz = axios.get(api_url + object.id);
-
-  promiseQuizz.then((response) => {
+function renderSenderLevel(object,object2) {
     const element = document.querySelector(".userSendQuizz");
     element.innerHTML = "";
     element.innerHTML += `
-    <div data-test="success-banner" id="${response.data.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${response.data.id})">
-        <img src="${response.data.image}" />
-        <h3>${response.data.title}</h3>
+    <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${object2.id})">
+        <img src="${object.image}" />
+        <h3>${object.title}</h3>
     </div>
     `;
-  });
-
-  promiseQuizz.catch((response) => {
-    console.log(response);
-  });
 }
 
 function toQuestions() {
+  userQuizz.title = "";
+  userQuizz.image = "";
+  userQuizz.questions.length = 0;
+  userQuizz.levels.length = 0;
+
   const inputTitle = document.querySelector(".quizzTitle");
   const inputImg = document.querySelector(".quizzImg");
   const inputNQuestions = document.querySelector(".nquestions");
@@ -581,7 +576,7 @@ function toSend() {
   const levelsFront = document.querySelector(".levelQuizz").classList;
   const sendFront = document.querySelector(".sendQuizz.hidden").classList;
 
-  let check = 0;
+  let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
       title: "",
@@ -596,7 +591,7 @@ function toSend() {
     const inputDescriptionLevel = document.querySelector(`.level${i + 1} .descriptionLevel`);
 
     if (Number(inputPercent.value) === 0) {
-      check = 1;
+      temp = 1;
     }
 
     if (
@@ -624,7 +619,7 @@ function toSend() {
       return;
     }
     userQuizz.levels[i] = level;
-    if (i === userQuizz.levels.length - 1 && check === 0) {
+    if (i === userQuizz.levels.length - 1 && temp === 0) {
       alert("Por favor preencha os dados corretamente.");
       inputLevel.value = "";
       inputPercent.value = "";
@@ -652,7 +647,7 @@ function toSend() {
     levelsFront.add("hidden");
     sendFront.remove("hidden");
 
-    renderSenderLevel(quizzData);
+    renderSenderLevel(userQuizz,quizzData);
   });
 
   sendQuizPromise.catch();
