@@ -55,7 +55,7 @@ function displayAllQuizz(array) {
         `;
           temp++;
           temp2 = 1;
-          i++
+          i++;
         }
       }
     }
@@ -127,6 +127,8 @@ function displayQuizz(array) {
 
   let j = 0;
 
+  let k = 0;
+  
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
@@ -142,6 +144,7 @@ function displayQuizz(array) {
     const questionContainer = document.getElementsByClassName("answer-group");
 
     const questionItem = entry.answers;
+
 
     element.innerHTML += `
     <div class="quizz-question-container" data-test="question">
@@ -160,7 +163,7 @@ function displayQuizz(array) {
 
     for (const answer of questionItem) {
       questionContainer[i].innerHTML += `
-        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer})" data-test='answer'>
+        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer}, ${k})" data-test='answer'>
           <div class="quizz-image"><img src="${answer.image}" /></div>
           <h3 class="item-text" data-test="answer-text">${answer.text}</h3>
         </div>
@@ -170,10 +173,12 @@ function displayQuizz(array) {
     }
 
     i++;
+
+    k++;
   }
 }
 
-function playGame(i, j, answer) {
+function playGame(i, j, answer, element) {
   const questionContainer = document.getElementsByClassName("answer-group");
 
   const chosenAnswer = document.getElementsByClassName("answer-item");
@@ -207,6 +212,8 @@ function playGame(i, j, answer) {
   }
 
   playCounter++;
+
+  autoScroll(element);
 
   resultGameDisplay();
 }
@@ -255,9 +262,6 @@ function resultGame(array) {
     index = [0];
   }
 
-  console.log(index);
-  console.log(resultArrayOrdered);
-
   for (const entry of resultArrayOrdered) {
     if (index == i) {
       element.innerHTML += `
@@ -272,6 +276,31 @@ function resultGame(array) {
     }
     i++;
   }
+
+  autoScrollResult();
+}
+
+function autoScroll(k) {
+  setTimeout(() => {
+    const element = document.getElementsByClassName("quizz-question-container");
+    console.log(k);
+    element[k].nextElementSibling.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center",
+    });
+  }, 2000);
+}
+
+function autoScrollResult() {
+  setTimeout(() => {
+    const element = document.querySelector(".result-quizz-container");
+    element.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "center",
+    });
+  }, 2000);
 }
 
 function binarySearch(array, input) {
@@ -666,4 +695,4 @@ function toHome() {
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
-})
+});
