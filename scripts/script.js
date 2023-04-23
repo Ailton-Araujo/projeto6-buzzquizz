@@ -262,7 +262,7 @@ function resultGame(array) {
   for (const entry of resultArrayOrdered) {
     if (index == i) {
       element.innerHTML += `
-    <div>
+    <div class="result-quizz-container">
       <div class="quizz-result-title" data-test="level-title"><p>${accuracy}% de acerto: ${entry.title}</p></div>
       <div class="result-container">
          <div class="result-image" data-test="level-img"><img src="${entry.image}"></div>
