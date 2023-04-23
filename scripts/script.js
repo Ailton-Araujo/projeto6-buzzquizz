@@ -24,10 +24,6 @@ if (localQuizzesString !== null) {
 }
 
 // Gets user-made quizzes and, if it exists, display it
-function getUserQuizz() { }
-
-function displayUserQuizz() { }
-
 // Gets quizzes made by third-party stored server-side, and then displays it
 function getAllQuizz() {
   const promise = axios.get(api_url);
@@ -40,13 +36,11 @@ function getAllQuizz() {
   });
 }
 
-let test
 function displayAllQuizz(array) {
-  test = array.data
   const elementUser = document.querySelector(".add-quizz");
   const elementAll = document.querySelector(".all-quizz");
-  elementUser.innerHTML = ""
-  elementAll.innerHTML = ""
+  elementUser.innerHTML = "";
+  elementAll.innerHTML = "";
 
   let temp = 0;
   for (let i = 0; i < array.data.length; i++) {
@@ -67,8 +61,8 @@ function displayAllQuizz(array) {
       }
     }
     if (temp === 1) {
-      elementUser.parentElement.classList.add("user-quizz-Used")
-      elementUser.parentElement.classList.remove("user-quizz")
+      elementUser.parentElement.classList.add("user-quizz-Used");
+      elementUser.parentElement.classList.remove("user-quizz");
       elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
       elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
       elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
@@ -674,6 +668,4 @@ function toHome() {
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
-
-  getUserQuizz();
 });
