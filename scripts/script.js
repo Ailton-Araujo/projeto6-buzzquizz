@@ -126,7 +126,7 @@ function displayQuizz(array) {
   let j = 0;
 
   let k = 0;
-
+  
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
@@ -473,15 +473,33 @@ function renderUserLevel(object) {
 }
 
 function renderSenderLevel(object) {
-
+ 
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" class="userQuizzContainer" onclick="toServer('quizz')">
+  <div data-test="success-banner" id="placeHolder" class="userQuizzContainer" onclick="">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
   `;
+  
+  let quizzData = {
+    id: "",
+    key: "",
+  };
+
+  const sendQuizPromise = axios.post(api_url, userQuizz);
+  sendQuizPromise.then((response) => {
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
+    userQuizzAdress.push(quizzData);
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
+  });
+
+  const quizzSucess = document.getElementById("placeHolder");
+  quizzSucess.id = response.data.id;
+  quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
 
 }
 
@@ -658,41 +676,20 @@ function toSend() {
     }
   }
 
+  
   levelsFront.add("hidden");
   sendFront.remove("hidden");
 
   renderSenderLevel(userQuizz);
 }
 
-function toServer(parameter) {
-  let quizzData = {
-    id: "",
-    key: "",
-  };
+function toQuizz() {
+  let quizzID = document.querySelector(".userQuizzContainer").id;
+  getQuizz(quizzID);
+}
 
-  const sendQuizPromise = axios.post(api_url, userQuizz);
-
-  sendQuizPromise.then((response) => {
-    quizzData.id = response.data.id;
-    quizzData.key = response.data.key;
-    userQuizzAdress.push(quizzData);
-    let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
-
-    switch (parameter) {
-      case 'quizz':
-        getQuizz(quizzData.id);
-        break;
-      case 'home':
-        window.location.reload();
-        break;
-
-      default:
-        break;
-    }
-  });
-
-
+function toHome() {
+  window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
