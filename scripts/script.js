@@ -49,7 +49,7 @@ function displayAllQuizz(array) {
       for (let j = 0; j < userQuizzAdress.length; j++) {
         if (array.data[i].id === userQuizzAdress[j].id) {
           elementUser.innerHTML += `
-        <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
+        <div data-test="my-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
           <img src="${array.data[i].image}" />
           <h3>${array.data[i].title}</h3>
         </div>
@@ -68,7 +68,7 @@ function displayAllQuizz(array) {
       elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
     } else if (check === 0) {
       elementAll.innerHTML += `
-      <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
+      <div data-test="others-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
         <img src="${array.data[i].image}" />
         <h3>${array.data[i].title}</h3>
       </div>
@@ -599,7 +599,7 @@ function toSend() {
     }
 
     if (
-      inputLevel.value.length >= 0 &&
+      inputLevel.value.length >= 10 &&
       inputPercent.value.length >= 0 &&
       inputPercent.value.length <= 100 &&
       checkUrl(inputImgLevel.value) &&
