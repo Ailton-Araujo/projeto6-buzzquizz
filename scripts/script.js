@@ -13,9 +13,14 @@ let playedArray = 0;
 let playCounter = 0;
 let correctPlayCounter = 0;
 
+let chosenQuizzId, accuracy;
+
 let userQuizzAdress = [];
 
 // Gets user-made quizzes and, if it exists, display it
+function getUserQuizz() {}
+
+function displayUserQuizz() {}
 
 // Gets quizzes made by third-party stored server-side, and then displays it
 function getAllQuizz() {
@@ -23,51 +28,34 @@ function getAllQuizz() {
 
   promise.then(displayAllQuizz);
 
+  promise.catch(console.error("bad request getAllQuizz()"));
   promise.catch((response) => {
-    console.log(response)
+    console.log(response);
   });
 }
+
 function displayAllQuizz(array) {
-  let temp = 0;
   localQuizzesString = localStorage.getItem("quizzes");
   localQuizzes = JSON.parse(localQuizzesString);
 
-  const elementUser = document.querySelector(".add-quizz");
-  elementUser.parentElement.classList.add("Used")
-  const elementAll = document.querySelector(".all-quizz");
-  elementUser.innerHTML = ""
-  elementAll.innerHTML = ""
-  for (let i = 0; i < array.data.length; i++) {
-    for (let j = 0; j < localQuizzes.length; j++) {
-      if (array.data[i].id === localQuizzes[j].id) {
-        adress = elementUser;
-        temp = 1;
-      } else {
-        adress = elementAll;
-      }
-    }
-    adress.innerHTML += `
-      <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
-        <img src="${array.data[i].image}" />
-        <h3>${array.data[i].title}</h3>
+  const element = document.querySelector(".all-quizz");
+
+  for (const entry of array.data) {
+    element.innerHTML += `
+      <div class="quizz-container" onclick="getQuizz(${entry.id})">
+        <img src="${entry.image}" />
+        <h3>${entry.title}</h3>
       </div>
       `;
   }
-  if (temp === 1) {
-    elementUser.parentElement.classList.add("user-quizz-Used")
-    elementUser.parentElement.classList.remove("user-quizz")
-    elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
-    elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
-    elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
-  }
-
 }
 
 function getQuizz(id) {
   const promise = axios.get(api_url + id);
 
+  chosenQuizzId = id;
+
   promise.then(displayQuizz);
-  promise.then(resultGame);
 
   promise.catch(console.error("bad request getQuizz()"));
 }
@@ -196,33 +184,76 @@ function resultGameDisplay() {
   if (playCounter === playedArray.length) {
     document.querySelector(".quizz-result").classList.remove("hidden");
 
-    const result = Math.round(playCounter / correctPlayCounter);
+    accuracy = Math.round((correctPlayCounter * 100) / playCounter);
 
-    document.querySelector(".rate").innerText = `${result}% :  `;
+    const promise = axios.get(api_url + chosenQuizzId);
+
+    promise.then(resultGame);
+
+    promise.catch(console.error("resultGameDisplay()"));
 
     playCounter = 0;
     correctPlayCounter = 0;
+    chosenQuizzId = null;
   }
 }
 
 function resultGame(array) {
-  const result = array.data.levels;
-
   const element = document.querySelector(".quizz-result");
+
+  const resultArray = array.data.levels;
+
+  const resultArrayOrdered = resultArray.sort(function (a, b) {
+    return parseFloat(a.minValue) - parseFloat(b.minValue);
+  });
+
+  let newArray = [];
+
+  let i = 0;
+
+  for (const entry of resultArrayOrdered) {
+    newArray.push(entry.minValue);
+  }
 
   element.innerHTML = "";
 
-  for (const entry of result) {
-    element.innerHTML += `
-    <div class="${entry.minValue}">
-      <div class="quizz-result-title"><p class="rate"></p><p>${entry.title}</p></div>
+  let index = binarySearch(newArray, accuracy);
+
+  if (index[0] === -1) {
+    index = [0];
+  }
+
+  for (const entry of resultArrayOrdered) {
+    if (index == i) {
+      element.innerHTML += `
+    <div>
+      <div class="quizz-result-title"><p class="accuracy">${accuracy}% de acerto:</p><p>&nbsp;${entry.title}</p></div>
       <div class="result-container">
          <div class="result-image"><img src="${entry.image}"></div>
          <div class="result-text"><p>${entry.text}</p></div>
        </div>
     </div>
     `;
+    }
+    i++;
   }
+}
+
+function binarySearch(array, input) {
+  let m = 0;
+  let n = array.length - 1;
+  while (m <= n) {
+    let k = (n + m) >> 1;
+    let cmp = input - array[k];
+    if (cmp > 0) {
+      m = k + 1;
+    } else if (cmp < 0) {
+      n = k - 1;
+    } else {
+      return [k, k + 1];
+    }
+  }
+  return [n];
 }
 
 function shuffle(array) {
@@ -257,8 +288,7 @@ function checkUrl(string) {
 /* Função para checar se a cor está em um formato HEX valido*/
 function isHexColor(hex) {
   let isHex = hex.match(/[A-F-0-9]/gi);
-  if (hex[0] === "#" &&
-    isHex.length === 6) {
+  if (hex[0] === "#" && isHex.length === 6) {
     return true;
   }
   return false;
@@ -271,7 +301,6 @@ function openInput(element) {
     questionOpened.classList.add("hidden");
     questionOpened.classList.remove("opened");
     questionOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
-
   } else if (element.classList.contains("levelPage")) {
     let levelOpened = document.querySelector(".levels .opened");
 
@@ -294,10 +323,9 @@ function renderUserQuestions(object) {
   const questionsFront = document.querySelector(".questionsQuizz > .questions");
   questionsFront.innerHTML = "";
   for (let i = 0; i < object.questions.length; i++) {
-
     if (i === 0) {
       displayQuestion = "opened";
-      displayButton = "hidden"
+      displayButton = "hidden";
     } else {
       displayQuestion = "hidden";
       displayButton = ""
@@ -307,8 +335,8 @@ function renderUserQuestions(object) {
           <div class="toggleButton">
             <h3>Pergunta ${i + 1}</h3>
             <button data-test="toggle" class="${displayButton} questionPage" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>
-          </div>
-          <div class="${displayQuestion}">
+            </div>
+            <div class="${displayQuestion}">
             <span class="space"></span>
             <li><input data-test="question-input" class="textQuestion" type="text" placeholder="Texto da pergunta" /></li>
             <li><input data-test="question-color-input" class="colorQuestion" type="text"
@@ -340,8 +368,8 @@ function renderUserQuestions(object) {
             </li>
             <li><input data-test="wrong-img-input" class="wrongImg3" type="text" placeholder="URL da imagem 3" /></li>
           </div>
-        </ul>`
-  };
+        </ul>`;
+  }
 }
 
 function renderUserLevel(object) {
@@ -352,11 +380,11 @@ function renderUserLevel(object) {
   for (let i = 0; i < object.levels.length; i++) {
     if (i === 0) {
       displayLevel = "opened";
-      displayButton = "hidden"
+      displayButton = "hidden";
     } else {
       displayLevel = "hidden";
       displayButton = "";
-    };
+    }
     levelsFront.innerHTML += `
       <ul data-test="level-ctn" class="level${i + 1} inputs">
         <div class="toggleButton">
@@ -378,12 +406,12 @@ function renderUserLevel(object) {
           </li>
         </div>
       </ul>
-      `
+      `;
   }
 }
 
 function renderSenderLevel(object) {
-  promiseQuizz = axios.get(api_url + object.id)
+  promiseQuizz = axios.get(api_url + object.id);
 
   promiseQuizz.then((response) => {
     const element = document.querySelector(".userSendQuizz");
@@ -394,11 +422,11 @@ function renderSenderLevel(object) {
         <h3>${response.data.title}</h3>
     </div>
     `;
-  })
+  });
 
   promiseQuizz.catch((response) => {
-    console.log(response)
-  })
+    console.log(response);
+  });
 }
 
 function toQuestions() {
@@ -509,7 +537,7 @@ function toLevels() {
 
   questionsFront.add("hidden");
   levelsFront.remove("hidden");
-  renderUserLevel(userQuizz)
+  renderUserLevel(userQuizz);
 }
 
 function toSend() {
@@ -541,17 +569,17 @@ function toSend() {
       checkUrl(inputImgLevel.value) &&
       inputDescriptionLevel.value.length >= 30
     ) {
-      level.title = inputLevel.value
-      level.image = inputImgLevel.value
-      level.text = inputDescriptionLevel.value
-      level.minValue = inputPercent.value
+      level.title = inputLevel.value;
+      level.image = inputImgLevel.value;
+      level.text = inputDescriptionLevel.value;
+      level.minValue = inputPercent.value;
 
       inputLevel.value = "";
       inputPercent.value = "";
       inputImgLevel.value = "";
       inputDescriptionLevel.value = "";
     } else {
-      alert("Por favor preencha os dados corretamente.")
+      alert("Por favor preencha os dados corretamente.");
       inputLevel.value = "";
       inputPercent.value = "";
       inputImgLevel.value = "";
@@ -559,8 +587,8 @@ function toSend() {
       return;
     }
     userQuizz.levels[i] = level;
-    if (i === (userQuizz.levels.length - 1) && check === 0) {
-      alert("Por favor preencha os dados corretamente.")
+    if (i === userQuizz.levels.length - 1 && check === 0) {
+      alert("Por favor preencha os dados corretamente.");
       inputLevel.value = "";
       inputPercent.value = "";
       inputImgLevel.value = "";
@@ -568,25 +596,25 @@ function toSend() {
       return;
     }
   }
-  const sendQuizPromise = axios.post(api_url, userQuizz)
+  const sendQuizPromise = axios.post(api_url, userQuizz);
 
   sendQuizPromise.then((response) => {
     let quizzData = {
       id: "",
-      key: ""
+      key: "",
     };
 
-    quizzData.id = response.data.id
-    quizzData.key = response.data.key
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
 
-    userQuizzAdress.push(quizzData)
-    let localQuizzArdress = JSON.stringify(userQuizzAdress)
-    localStorage.setItem("quizzes", localQuizzArdress)
+    userQuizzAdress.push(quizzData);
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
 
     levelsFront.add("hidden");
     sendFront.remove("hidden");
 
-    renderSenderLevel(quizzData)
+    renderSenderLevel(quizzData);
   });
 
   sendQuizPromise.catch();
@@ -598,10 +626,11 @@ function toQuizz() {
 }
 
 function toHome() {
-  window.location.reload()
+  window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
 
+  getUserQuizz();
 });
