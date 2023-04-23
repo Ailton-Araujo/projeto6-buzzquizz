@@ -31,9 +31,6 @@ function getAllQuizz() {
   promise.then(displayAllQuizz);
 
   promise.catch(console.error("bad request getAllQuizz()"));
-  promise.catch((response) => {
-    console.log(response);
-  });
 }
 
 function displayAllQuizz(array) {
@@ -47,6 +44,8 @@ function displayAllQuizz(array) {
     if (userQuizzAdress[temp2] !== undefined) {
       for (let j = 0; j < userQuizzAdress.length; j++) {
         if (array.data[i].id === userQuizzAdress[j].id) {
+          console.log(array.data[i])
+          console.log(array.data)
           elementUser.innerHTML += `
         <div data-test="my-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
           <img src="${array.data[i].image}" />
@@ -55,7 +54,6 @@ function displayAllQuizz(array) {
         `;
           temp++;
           temp2 = 1;
-          i++;
         }
       }
     }
@@ -474,37 +472,23 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object) {
-  
+function renderSenderLevel(object,id) {
+
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="placeHolder" class="userQuizzContainer" onclick="">
+  <div data-test="success-banner" id="${id}" class="userQuizzContainer" onclick="getQuizz(id)">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
   `;
 
+  /*
+  const quizzSucess = document.getElementById("placeHolder");
+  quizzSucess.id = response.data.id;
+  quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
+*/
 
-  const sendQuizPromise = axios.post(api_url, object);
-
-  sendQuizPromise.then((response) => {
-    let quizzData = {
-      id: "",
-      key: "",
-    };
-    const quizzSucess = document.getElementById("placeHolder");
-    quizzSucess.id = response.data.id;
-    quizzSucess.onclick= function(){ displayQuizzUserPage(response.data.id); } 
-    quizzData.id = response.data.id;
-    quizzData.key = response.data.key;
-    userQuizzAdress.push(quizzData);
-
-    let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
-  });
-
-  sendQuizPromise.catch();
 }
 
 function toQuestions() {
@@ -627,6 +611,11 @@ function toSend() {
   const levelsFront = document.querySelector(".levelQuizz").classList;
   const sendFront = document.querySelector(".sendQuizz.hidden").classList;
 
+  let quizzData = {
+    id: "",
+    key: "",
+  };
+
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
@@ -680,15 +669,33 @@ function toSend() {
     }
   }
 
-  levelsFront.add("hidden");
-  sendFront.remove("hidden");
+  const sendQuizPromise = axios.post(api_url, userQuizz);
 
-  renderSenderLevel(userQuizz);
+  sendQuizPromise.then((response) => {
+
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
+
+    userQuizzAdress.push(quizzData);
+
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
+
+
+    levelsFront.add("hidden");
+    sendFront.remove("hidden");
+  
+    renderSenderLevel(userQuizz,quizzData.id);
+
+
+  });
+
+
 }
 
 function toQuizz() {
   let quizzID = document.querySelector(".userQuizzContainer").id;
-  displayQuizzUserPage(quizzID);
+  getQuizz(quizzID);
 }
 
 function toHome() {
