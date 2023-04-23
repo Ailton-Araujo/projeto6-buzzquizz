@@ -223,14 +223,11 @@ function resultGame(array) {
     index = [0];
   }
 
-  console.log(resultArrayOrdered);
-  console.log(index);
-
   for (const entry of resultArrayOrdered) {
     if (index == i) {
       element.innerHTML += `
     <div>
-      <div class="quizz-result-title"><p class="accuracy">${accuracy}%</p><p>&nbsp;${entry.title}</p></div>
+      <div class="quizz-result-title"><p class="accuracy">${accuracy}% de acerto:</p><p>&nbsp;${entry.title}</p></div>
       <div class="result-container">
          <div class="result-image"><img src="${entry.image}"></div>
          <div class="result-text"><p>${entry.text}</p></div>
