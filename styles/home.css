@@ -49,24 +49,16 @@ header h1 {
   width: 100%;
   margin-top: 146px;
   margin-bottom: 77px;
-  background-color: #fafafa;
   border: 1px dashed #d5d5d5;
   border-radius: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.add-quizz {
-  height: 181px;
-  width: 250px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
-.add-quizz h3 {
+.user-quizz h3 {
   margin-inline: 15px;
   margin-bottom: 25px;
   font-style: normal;
@@ -76,6 +68,28 @@ header h1 {
   align-items: center;
   text-align: center;
   color: #b9b9b9;
+}
+
+.user-quizz-Used {
+  height: 200px;
+  max-width: 1051px;
+  width: 100%;
+  margin-top: 146px;
+  margin-bottom: 77px;
+  border-radius: 5px;
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items:start;
+  position: relative;
+}
+
+.user-quizz-Used h3 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 23px;
+  color: #000000;
 }
 
 button.noUserQuizz {
@@ -89,6 +103,25 @@ button.noUserQuizz {
   border-radius: 50px;
   color: #ec362d;
   background-color: #fafafa;
+  position: absolute;
+  bottom: 15px;
+}
+
+button.withUserQuizz {
+  width: 30px;
+  height: 30px;
+  border:none;
+  padding: 0px;
+  color: #ec362d;
+  background-color: none;
+  border-radius: 100%;
+  position: absolute;
+  left: 130px;
+  top: -5px;
+}
+button.withUserQuizz ion-icon {
+  width: 30px;
+  height: 30px;
 }
 
 .all-quizz-title {
@@ -106,7 +139,7 @@ button.noUserQuizz {
   color: #000000;
 }
 
-.all-quizz{
+.all-quizz {
   height: 374px;
   max-width: 1051px;
   width: 100%;
@@ -114,6 +147,16 @@ button.noUserQuizz {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
+}
+
+.add-quizz{
+  width: 100%;
+  gap: 15px;
+  margin-left: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
   align-items: center;
 }
 
@@ -125,10 +168,11 @@ button.noUserQuizz {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow:hidden;
+  overflow: hidden;
 }
 
-.all-quizz img{
+.all-quizz img,
+.add-quizz img {
   height: 181px;
   width: 340px;
   border-radius: 5px;
@@ -137,7 +181,8 @@ button.noUserQuizz {
   z-index: -1;
 }
 
-.all-quizz h3{
+.all-quizz h3,
+.add-quizz h3 {
   max-width: 301px;
   padding-top: 100px;
   font-style: normal;

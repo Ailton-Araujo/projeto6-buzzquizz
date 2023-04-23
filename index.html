@@ -22,16 +22,21 @@
     <main>
       <section class="home-page">
         <article class="user-quizz">
-          <div class="add-quizz">
-            <h3>Você não criou nenhum quizz ainda :(</h3>
-            <button data-test="create-btn" type="button" class="noUserQuizz" onclick="addQuizz()">
-              <p>Criar Quizz</p>
-            </button>
-          </div>
+          <h3>Você não criou nenhum quizz ainda :(</h3>
+          <div class="add-quizz"></div>
+          <button data-test="create-btn" type="button" class="noUserQuizz" onclick="addQuizz()">
+            <p>Criar Quizz</p>
+          </button>
+          <button data-test="create-btn" type="button" class=" hidden withUserQuizz " onclick="addQuizz()">
+            <ion-icon name="add-circle"></ion-icon>
+          </button>
+          
         </article>
+
         <div class="all-quizz-title">
           <h2>Todos os Quizzes</h2>
         </div>
+
         <article class="all-quizz"></article>
       </section>
 

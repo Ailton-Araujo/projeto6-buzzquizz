@@ -16,9 +16,6 @@ let correctPlayCounter = 0;
 let userQuizzAdress = [];
 
 // Gets user-made quizzes and, if it exists, display it
-function getUserQuizz() {}
-
-function displayUserQuizz() {}
 
 // Gets quizzes made by third-party stored server-side, and then displays it
 function getAllQuizz() {
@@ -26,23 +23,44 @@ function getAllQuizz() {
 
   promise.then(displayAllQuizz);
 
-  promise.catch(console.error("bad request getAllQuizz()"));
+  promise.catch((response)=>{
+    console.log(response)
+  });
 }
-
 function displayAllQuizz(array) {
-  localQuizzesString= localStorage.getItem("quizzes");
+  let temp = 0;
+  localQuizzesString = localStorage.getItem("quizzes");
   localQuizzes = JSON.parse(localQuizzesString);
-  console.log(localQuizzes)
-  const element = document.querySelector(".all-quizz");
 
-  for (const entry of array.data) {
-    element.innerHTML += `
-      <div class="quizz-container" onclick="getQuizz(${entry.id})">
-        <img src="${entry.image}" />
-        <h3>${entry.title}</h3>
+  const elementUser = document.querySelector(".add-quizz");
+  elementUser.parentElement.classList.add("Used")
+  const elementAll = document.querySelector(".all-quizz");
+  elementUser.innerHTML = ""
+  elementAll.innerHTML = ""
+  for (let i = 0; i < array.data.length; i++) {
+    for (let j = 0; j < localQuizzes.length; j++) {
+      if (array.data[i].id === localQuizzes[j].id) {
+        adress = elementUser;
+        temp = 1;
+      } else {
+        adress = elementAll;
+      }
+    }
+    adress.innerHTML += `
+      <div class="quizz-container" onclick="getQuizz(${array.data[i].id})">
+        <img src="${array.data[i].image}" />
+        <h3>${array.data[i].title}</h3>
       </div>
       `;
   }
+if(temp === 1){
+  elementUser.parentElement.classList.add("user-quizz-Used")
+  elementUser.parentElement.classList.remove("user-quizz")
+  elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
+  elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
+  elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
+}
+
 }
 
 function getQuizz(id) {
@@ -247,26 +265,35 @@ function isHexColor(hex) {
 }
 
 function openInput(element) {
-  if(element.classList.contains("questionPage")){
+  if (element.classList.contains("questionPage")) {
     let questionOpened = document.querySelector(".questions .opened");
     questionOpened.classList.add("closed");
+    setTimeout(()=>{
+      questionOpened.classList.add("hidden");
+    },900);
     questionOpened.classList.remove("opened");
     questionOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
 
-  }else if(element.classList.contains("levelPage")){
+  } else if (element.classList.contains("levelPage")) {
     let levelOpened = document.querySelector(".levels .opened");
     levelOpened.classList.add("closed");
+    setTimeout(()=>{
+      questionOpened.classList.add("hidden");
+    },900);
     levelOpened.classList.remove("opened");
     levelOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
   }
 
-  element.parentNode.nextElementSibling.classList.remove("closed");
-  element.parentNode.nextElementSibling.classList.add("opened");
+  element.parentNode.nextElementSibling.classList.remove("hidden");
+  setTimeout(()=>{
+    element.parentNode.nextElementSibling.classList.remove("closed");
+    element.parentNode.nextElementSibling.classList.add("opened");;
+  },10);
+
   setTimeout(() => {
     element.parentElement.parentElement.scrollIntoView({ block: "start" });
-    element.parentElement.parentElement.scrollIntoView({ block: "start" });
   }, 320);
-    element.classList.toggle("hidden");
+  element.classList.toggle("hidden");
 }
 
 function renderUserQuestions(object) {
@@ -280,7 +307,7 @@ function renderUserQuestions(object) {
       displayQuestion = "opened";
       displayButton = "hidden"
     } else {
-      displayQuestion = "closed";
+      displayQuestion = "closed hidden";
       displayButton = ""
     };
     questionsFront.innerHTML += `
@@ -335,7 +362,7 @@ function renderUserLevel(object) {
       displayLevel = "opened";
       displayButton = "hidden"
     } else {
-      displayLevel = "closed";
+      displayLevel = "closed hidden";
       displayButton = "";
     };
     levelsFront.innerHTML += `
@@ -363,12 +390,12 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object){
+function renderSenderLevel(object) {
   promiseQuizz = axios.get(api_url + object.id)
 
-  promiseQuizz.then((response)=>{
+  promiseQuizz.then((response) => {
     const element = document.querySelector(".userSendQuizz");
-    element.innerHTML= "";
+    element.innerHTML = "";
     element.innerHTML += `
     <div data-test="success-banner" id="${response.data.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${response.data.id})">
         <img src="${response.data.image}" />
@@ -377,7 +404,7 @@ function renderSenderLevel(object){
     `;
   })
 
-  promiseQuizz.catch((response)=>{
+  promiseQuizz.catch((response) => {
     console.log(response)
   })
 }
@@ -573,22 +600,16 @@ function toSend() {
   sendQuizPromise.catch();
 }
 
-function toQuizz(){
+function toQuizz() {
   let quizzID = document.querySelector(".userQuizzContainer").id;
   displayQuizzUserPage(quizzID);
 }
-let test={
-  id:139
-}
 
-function toHome(){
+function toHome() {
   window.location.reload()
 }
-renderSenderLevel(test)
-
 
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
 
-  getUserQuizz();
 });
