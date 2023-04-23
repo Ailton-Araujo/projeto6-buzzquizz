@@ -600,6 +600,7 @@ function toSend() {
 
     if (
       inputLevel.value.length >= 10 &&
+      inputLevel.value.length <= 100 && 
       inputPercent.value.length >= 0 &&
       inputPercent.value.length <= 100 &&
       checkUrl(inputImgLevel.value) &&
