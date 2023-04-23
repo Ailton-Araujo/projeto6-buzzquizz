@@ -23,7 +23,7 @@ function getAllQuizz() {
 
   promise.then(displayAllQuizz);
 
-  promise.catch((response) => {
+  promise.catch((response)=>{
     console.log(response)
   });
 }
@@ -53,13 +53,13 @@ function displayAllQuizz(array) {
       </div>
       `;
   }
-  if (temp === 1) {
-    elementUser.parentElement.classList.add("user-quizz-Used")
-    elementUser.parentElement.classList.remove("user-quizz")
-    elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
-    elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
-    elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
-  }
+if(temp === 1){
+  elementUser.parentElement.classList.add("user-quizz-Used")
+  elementUser.parentElement.classList.remove("user-quizz")
+  elementUser.parentElement.querySelector("h3").innerHTML = "Seus Quizzes";
+  elementUser.parentElement.querySelector("button.noUserQuizz").classList.add("hidden");
+  elementUser.parentElement.querySelector("button.withUserQuizz").classList.remove("hidden");
+}
 
 }
 
@@ -268,31 +268,24 @@ function openInput(element) {
   if (element.classList.contains("questionPage")) {
     let questionOpened = document.querySelector(".questions .opened");
     questionOpened.classList.add("closed");
-    setTimeout(() => {
-      questionOpened.classList.add("hidden");
-    }, 900);
+    questionOpened.classList.add("hidden");
     questionOpened.classList.remove("opened");
     questionOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
 
   } else if (element.classList.contains("levelPage")) {
     let levelOpened = document.querySelector(".levels .opened");
     levelOpened.classList.add("closed");
-    setTimeout(() => {
-      questionOpened.classList.add("hidden");
-    }, 900);
+    questionOpened.classList.add("hidden");
     levelOpened.classList.remove("opened");
     levelOpened.previousElementSibling.querySelector("button").classList.toggle("hidden");
   }
 
   element.parentNode.nextElementSibling.classList.remove("hidden");
-  setTimeout(() => {
+  setTimeout(()=>{
     element.parentNode.nextElementSibling.classList.remove("closed");
     element.parentNode.nextElementSibling.classList.add("opened");;
-  }, 10);
-
-  setTimeout(() => {
-    element.parentElement.parentElement.scrollIntoView({ block: "start" });
-  }, 320);
+  },10);
+  element.parentElement.parentElement.scrollIntoView({ block: "start" });
   element.classList.toggle("hidden");
 }
 
@@ -311,8 +304,8 @@ function renderUserQuestions(object) {
       displayButton = ""
     };
     questionsFront.innerHTML += `
-        <ul  class="question${i + 1} inputs">
-          <div data-test="question-ctn" class="toggleButton">
+        <ul data-test="question-ctn" class="question${i + 1} inputs">
+          <div class="toggleButton">
             <h3>Pergunta ${i + 1}</h3>
             <button data-test="toggle" class="${displayButton} questionPage" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>
           </div>
@@ -366,8 +359,8 @@ function renderUserLevel(object) {
       displayButton = "";
     };
     levelsFront.innerHTML += `
-      <ul class="level${i + 1} inputs">
-        <div data-test="level-ctn" class="toggleButton">
+      <ul data-test="level-ctn" class="level${i + 1} inputs">
+        <div class="toggleButton">
           <h3>Nível ${i + 1}</h3>
           <button data-test="toggle" class="${displayButton} levelPage" type="button" onclick="openInput(this)"><img src="./assets/button-img.png" alt=""></button>
         </div>
