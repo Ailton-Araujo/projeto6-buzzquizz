@@ -126,7 +126,7 @@ function displayQuizz(array) {
   let j = 0;
 
   let k = 0;
-  
+
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
@@ -472,22 +472,16 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object,id) {
+function renderSenderLevel(object) {
 
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="${id}" class="userQuizzContainer" onclick="getQuizz(id)">
+  <div data-test="success-banner" class="userQuizzContainer" onclick="toServer('quizz')">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
   `;
-
-  /*
-  const quizzSucess = document.getElementById("placeHolder");
-  quizzSucess.id = response.data.id;
-  quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
-*/
 
 }
 
@@ -611,11 +605,6 @@ function toSend() {
   const levelsFront = document.querySelector(".levelQuizz").classList;
   const sendFront = document.querySelector(".sendQuizz.hidden").classList;
 
-  let quizzData = {
-    id: "",
-    key: "",
-  };
-
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
@@ -669,37 +658,41 @@ function toSend() {
     }
   }
 
+  levelsFront.add("hidden");
+  sendFront.remove("hidden");
+
+  renderSenderLevel(userQuizz);
+}
+
+function toServer(parameter) {
+  let quizzData = {
+    id: "",
+    key: "",
+  };
+
   const sendQuizPromise = axios.post(api_url, userQuizz);
 
   sendQuizPromise.then((response) => {
-
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
-
     userQuizzAdress.push(quizzData);
-
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
 
+    switch (parameter) {
+      case 'quizz':
+        getQuizz(quizzData.id);
+        break;
+      case 'home':
+        window.location.reload();
+        break;
 
-    levelsFront.add("hidden");
-    sendFront.remove("hidden");
-  
-    renderSenderLevel(userQuizz,quizzData.id);
-
-
+      default:
+        break;
+    }
   });
 
 
-}
-
-function toQuizz() {
-  let quizzID = document.querySelector(".userQuizzContainer").id;
-  getQuizz(quizzID);
-}
-
-function toHome() {
-  window.location.reload();
 }
 
 document.addEventListener("DOMContentLoaded", function () {
