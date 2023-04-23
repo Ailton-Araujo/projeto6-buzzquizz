@@ -24,6 +24,7 @@
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .quizz-header img {
@@ -151,16 +152,23 @@
   height: 99px;
   width: 685px;
   margin-bottom: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #EC362D;
+}
+
+.quizz-result-title p {
   font-style: normal;
   font-weight: 700;
   font-size: 23px;
   line-height: 27px;
   color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   mix-blend-mode: difference;
-  overflow: hidden;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  margin-left: 20px;
+
 }
 
 .result-container {
