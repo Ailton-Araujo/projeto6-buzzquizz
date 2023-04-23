@@ -449,7 +449,7 @@ function renderSenderLevel(object,object2) {
     const element = document.querySelector(".userSendQuizz");
     element.innerHTML = "";
     element.innerHTML += `
-    <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${object2.id})">
+    <div id="${object2.id}" class="userQuizzContainer" onclick="displayQuizzUserPage(${object2.id})">
         <img src="${object.image}" />
         <h3>${object.title}</h3>
     </div>
