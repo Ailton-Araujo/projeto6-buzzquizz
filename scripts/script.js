@@ -497,11 +497,35 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object, object2) {
+function renderSenderLevel(object) {
+  let quizzData = {
+    id: "",
+    key: "",
+  };
+
+  const sendQuizPromise = axios.post(api_url, userQuizz);
+  sendQuizPromise.then((response) => {
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
+    userQuizzAdress.push(quizzData);
+
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
+
+    loadingFront.add("hidden");
+    sendFront.remove("hidden");
+    }
+  );
+  sendQuizPromise.catch(()=>{
+    alert("Ertro no Servidor tente novamente")
+    sendFront.add("hidden");
+    levelsFront.remove("hidden");
+  });
+
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="toQuizz()">
+  <div data-test="success-banner" id="${quizzData.id}" class="userQuizzContainer" onclick="toQuizz()">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
@@ -629,11 +653,6 @@ function toSend() {
   const loadingFront = document.querySelector(".loading-screen.hidden").classList;
   const sendFront = document.querySelector(".sendQuizz.hidden").classList;
 
-  let quizzData = {
-    id: "",
-    key: "",
-  };
-
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
@@ -689,27 +708,7 @@ function toSend() {
 
   levelsFront.add("hidden");
   loadingFront.remove("hidden");
-  const sendQuizPromise = axios.post(api_url, userQuizz);
-
-  sendQuizPromise.then((response) => {
-    quizzData.id = response.data.id;
-    quizzData.key = response.data.key;
-    userQuizzAdress.push(quizzData);
-
-    let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
-
-    loadingFront.add("hidden");
-    sendFront.remove("hidden");
-
-    renderSenderLevel(userQuizz, quizzData);
-    }
-  );
-  sendQuizPromise.catch(()=>{
-    alert("Ertro no Servidor tente novamente")
-    loadingFront.add("hidden");
-    levelsFront.remove("hidden");
-  });
+  renderSenderLevel(userQuizz);
 }
 
 function toQuizz() {
