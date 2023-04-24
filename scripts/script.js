@@ -26,6 +26,9 @@ if (localQuizzesString !== null) {
 // Gets quizzes made by third-party stored server-side, and then displays it
 
 function getAllQuizz() {
+  document.querySelector(".loading-screen").classList.remove("hidden");
+  document.querySelector(".home-page").classList.add("hidden");
+
   const promise = axios.get(api_url);
 
   promise.then(displayAllQuizz);
@@ -34,6 +37,9 @@ function getAllQuizz() {
 }
 
 function displayAllQuizz(array) {
+  document.querySelector(".loading-screen").classList.add("hidden");
+  document.querySelector(".home-page").classList.remove("hidden");
+
   const elementUser = document.querySelector(".add-quizz");
   const elementAll = document.querySelector(".all-quizz");
   elementUser.innerHTML = "";
@@ -75,6 +81,10 @@ function displayAllQuizz(array) {
 }
 
 function getQuizz(id) {
+  document.querySelector(".loading-screen").classList.remove("hidden");
+  document.querySelector(".home-page").classList.add("hidden");
+  document.querySelector(".quizz-page").classList.add("hidden");
+
   const promise = axios.get(api_url + id);
 
   chosenQuizzId = id;
@@ -102,11 +112,16 @@ function hideQuizzPage() {
   document.querySelector(".quizz-result").classList.add("hidden");
 
   chosenQuizzId = null;
+
+  getAllQuizz();
 }
 
 // Display chosen quizz
 function displayQuizz(array) {
   window.scrollTo(0, 0);
+
+  document.querySelector(".loading-screen").classList.add("hidden");
+  document.querySelector(".home-page").classList.remove("hidden");
 
   document.querySelector(".quizz-page").classList.remove("hidden");
   document.querySelector(".home-page").classList.add("hidden");
@@ -481,7 +496,7 @@ function renderSenderLevel(object) {
       <h3>${object.title}</h3>
   </div>
   `;
-  
+
   let quizzData = {
     id: "",
     key: "",
@@ -497,7 +512,9 @@ function renderSenderLevel(object) {
 
     const quizzSucess = document.getElementById("placeHolder");
     quizzSucess.id = response.data.id;
-    quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
+    quizzSucess.onclick = function () {
+      getQuizz(response.data.id);
+    };
   });
 }
 

@@ -30,6 +30,22 @@ header h1 {
   color: #ffffff;
 }
 
+.loading-screen {
+  height: 100%;
+  width: 100%;
+  top: 0px;
+  background-color: #fafafa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 10;
+}
+
+.loading-screen img {
+  height: 300px;
+}
+
 .home-page {
   height: 100%;
   width: 100%;
