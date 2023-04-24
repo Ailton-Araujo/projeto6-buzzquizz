@@ -678,7 +678,7 @@ function toSend() {
       level.title = inputLevel.value;
       level.image = inputImgLevel.value;
       level.text = inputDescriptionLevel.value;
-      level.minValue = inputPercent.value;
+      level.minValue = Number(inputPercent.value);
 
       inputLevel.value = "";
       inputPercent.value = "";
