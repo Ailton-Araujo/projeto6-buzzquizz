@@ -487,35 +487,15 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object) {
+function renderSenderLevel(object, object2) {
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="placeHolder" class="userQuizzContainer" onclick="">
+  <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="toQuizz()">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
   `;
-
-  let quizzData = {
-    id: "",
-    key: "",
-  };
-
-  const sendQuizPromise = axios.post(api_url, userQuizz);
-  sendQuizPromise.then((response) => {
-    quizzData.id = response.data.id;
-    quizzData.key = response.data.key;
-    userQuizzAdress.push(quizzData);
-    let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
-
-    const quizzSucess = document.getElementById("placeHolder");
-    quizzSucess.id = response.data.id;
-    quizzSucess.onclick = function () {
-      getQuizz(response.data.id);
-    };
-  });
 }
 
 function toQuestions() {
@@ -636,7 +616,13 @@ function toLevels() {
 
 function toSend() {
   const levelsFront = document.querySelector(".levelQuizz").classList;
+  const loadingFront = document.querySelector(".loading-screen.hidden").classList;
   const sendFront = document.querySelector(".sendQuizz.hidden").classList;
+
+  let quizzData = {
+    id: "",
+    key: "",
+  };
 
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
@@ -691,14 +677,32 @@ function toSend() {
     }
   }
 
+  const sendQuizPromise = axios.post(api_url, userQuizz);
   levelsFront.add("hidden");
-  sendFront.remove("hidden");
+  loadingFront.remove("hidden");
 
-  renderSenderLevel(userQuizz);
+ 
+  sendQuizPromise.then((response) => {
+
+    quizzData.id = response.data.id;
+    quizzData.key = response.data.key;
+    userQuizzAdress.push(quizzData);
+
+    let localQuizzArdress = JSON.stringify(userQuizzAdress);
+    localStorage.setItem("quizzes", localQuizzArdress);
+
+    loadingFront.add("hidden");
+    sendFront.remove("hidden");
+
+    renderSenderLevel(userQuizz, quizzData);
+    }
+  );
 }
 
 function toQuizz() {
   let quizzID = document.querySelector(".userQuizzContainer").id;
+  const sendFront = document.querySelector(".sendQuizz").classList;
+  sendFront.add("hidden")
   getQuizz(quizzID);
 }
 
