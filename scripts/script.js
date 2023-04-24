@@ -685,13 +685,11 @@ function toSend() {
     }
   }
 
-  const sendQuizPromise = axios.post(api_url, userQuizz);
   levelsFront.add("hidden");
   loadingFront.remove("hidden");
+  const sendQuizPromise = axios.post(api_url, userQuizz);
 
- 
   sendQuizPromise.then((response) => {
-
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
     userQuizzAdress.push(quizzData);
@@ -705,6 +703,11 @@ function toSend() {
     renderSenderLevel(userQuizz, quizzData);
     }
   );
+  sendQuizPromise.catch(()=>{
+    alert("Ertro no Servidor tente novamente")
+    loadingFront.add("hidden");
+    levelsFront.remove("hidden");
+  });
 }
 
 function toQuizz() {
