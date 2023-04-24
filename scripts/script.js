@@ -44,8 +44,8 @@ function displayAllQuizz(array) {
     if (userQuizzAdress[temp2] !== undefined) {
       for (let j = 0; j < userQuizzAdress.length; j++) {
         if (array.data[i].id === userQuizzAdress[j].id) {
-          console.log(array.data[i])
-          console.log(array.data)
+          console.log(array.data[i]);
+          console.log(array.data);
           elementUser.innerHTML += `
         <div data-test="my-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
           <img src="${array.data[i].image}" />
@@ -126,7 +126,7 @@ function displayQuizz(array) {
   let j = 0;
 
   let k = 0;
-  
+
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
@@ -142,7 +142,6 @@ function displayQuizz(array) {
     const questionContainer = document.getElementsByClassName("answer-group");
 
     const questionItem = entry.answers;
-
 
     element.innerHTML += `
     <div class="quizz-question-container" data-test="question">
@@ -256,8 +255,10 @@ function resultGame(array) {
 
   if (index[0] == -1) {
     index = [0];
-  } else if (accuracy == 0) {
+  } else if (accuracy === 0) {
     index = [0];
+  } else if (index.length === 2) {
+    index.pop();
   }
 
   for (const entry of resultArrayOrdered) {
@@ -281,7 +282,6 @@ function resultGame(array) {
 function autoScroll(k) {
   setTimeout(() => {
     const element = document.getElementsByClassName("quizz-question-container");
-    console.log(k);
     element[k].nextElementSibling.scrollIntoView({
       behavior: "smooth",
       block: "center",
@@ -473,7 +473,6 @@ function renderUserLevel(object) {
 }
 
 function renderSenderLevel(object) {
- 
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
@@ -675,7 +674,6 @@ function toSend() {
     }
   }
 
-  
   levelsFront.add("hidden");
   sendFront.remove("hidden");
 
@@ -687,15 +685,13 @@ function toQuizz() {
   getQuizz(quizzID);
 }
 
-function toHome() {
-  window.location.reload();
-}
-
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
 });
 
-
+function toHome() {
+  window.location.reload();
+}
 
 /* to Bonus
 
