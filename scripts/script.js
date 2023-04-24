@@ -140,8 +140,6 @@ function displayQuizz(array) {
 
   let j = 0;
 
-  let k = 0;
-
   playedArray = [];
   playCounter = 0;
   correctPlayCounter = 0;
@@ -177,7 +175,7 @@ function displayQuizz(array) {
 
     for (const answer of questionItem) {
       questionContainer[i].innerHTML += `
-        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer}, ${k})" data-test='answer'>
+        <div class="answer-item" onclick="playGame(${i}, ${j}, ${answer.isCorrectAnswer})" data-test='answer'>
           <div class="quizz-image"><img src="${answer.image}" /></div>
           <h3 class="item-text" data-test="answer-text">${answer.text}</h3>
         </div>
@@ -187,12 +185,10 @@ function displayQuizz(array) {
     }
 
     i++;
-
-    k++;
   }
 }
 
-function playGame(i, j, answer, element) {
+function playGame(i, j, answer) {
   const questionContainer = document.getElementsByClassName("answer-group");
 
   const chosenAnswer = document.getElementsByClassName("answer-item");
@@ -227,7 +223,7 @@ function playGame(i, j, answer, element) {
 
   playCounter++;
 
-  autoScroll(element);
+  autoScroll(i);
 
   resultGameDisplay();
 }
@@ -296,10 +292,10 @@ function resultGame(array) {
   autoScrollResult();
 }
 
-function autoScroll(k) {
+function autoScroll(i) {
   setTimeout(() => {
     const element = document.getElementsByClassName("quizz-question-container");
-    element[k].nextElementSibling.scrollIntoView({
+    element[i].nextElementSibling.scrollIntoView({
       behavior: "smooth",
       block: "center",
       inline: "center",
