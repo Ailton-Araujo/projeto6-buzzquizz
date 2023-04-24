@@ -167,7 +167,7 @@ function displayQuizz(array) {
 
     title[i].style.backgroundColor = `${entry.color}`;
 
-    shuffle(questionItem);
+    title[i].style.color = `${getContrastYIQ(entry.color)}`;
 
     questionItem.index = i;
 
@@ -343,6 +343,14 @@ function shuffle(array) {
     array[j] = array[i];
     array[i] = temp;
   }
+}
+
+function getContrastYIQ(hexcolor) {
+  var r = parseInt(hexcolor.substring(1, 3), 16);
+  var g = parseInt(hexcolor.substring(3, 5), 16);
+  var b = parseInt(hexcolor.substring(5, 7), 16);
+  var yiq = (r * 299 + g * 587 + b * 114) / 1000;
+  return yiq >= 128 ? "black" : "white";
 }
 
 function addQuizz() {
