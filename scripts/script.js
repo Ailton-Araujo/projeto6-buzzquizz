@@ -495,12 +495,11 @@ function renderSenderLevel(object) {
     userQuizzAdress.push(quizzData);
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
+
+    const quizzSucess = document.getElementById("placeHolder");
+    quizzSucess.id = response.data.id;
+    quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
   });
-
-  const quizzSucess = document.getElementById("placeHolder");
-  quizzSucess.id = response.data.id;
-  quizzSucess.onclick= function(){ getQuizz(response.data.id); } 
-
 }
 
 function toQuestions() {
@@ -695,3 +694,12 @@ function toHome() {
 document.addEventListener("DOMContentLoaded", function () {
   getAllQuizz();
 });
+
+
+
+/* to Bonus
+
+          <button data-test="edit" class="edit" type="button" onclick="deleteQuizz()"><img src="./assets/button-img.png" alt=""></button>
+          <button data-test="delete" class="delete" type="button" onclick="deleteQuizz()"><ion-icon name="trash-outline"></ion-icon></button>
+
+*/

@@ -71,7 +71,6 @@ header h1 {
 }
 
 .user-quizz-Used {
-  height: 200px;
   max-width: 1051px;
   width: 100%;
   margin-top: 146px;
@@ -80,8 +79,8 @@ header h1 {
   gap: 5px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items:start;
+  justify-content: start;
+  align-items: start;
   position: relative;
 }
 
@@ -90,6 +89,30 @@ header h1 {
   font-size: 20px;
   line-height: 23px;
   color: #000000;
+}
+
+
+.edit{
+  width: 45px;
+  height: 45px;
+  background-color: #ec362d;
+  position: absolute;
+  right: 0px;
+  top: 10px;
+  border: none;
+  border-radius: 15px 0px 0px 0px;
+}
+
+.delete{
+  width: 45px;
+  height: 45px;
+  background-color: #ec362d;
+  position: absolute;
+  right: 0px;
+  top: 55px;
+  border: none;
+  border-radius: 0px 0px 0px 15px;
+  z-index: 2;
 }
 
 button.noUserQuizz {
@@ -153,7 +176,6 @@ button.withUserQuizz ion-icon {
 .add-quizz{
   width: 100%;
   gap: 15px;
-  margin-left: 15px;
   display: flex;
   flex-wrap: wrap;
   justify-content: start;
@@ -169,6 +191,7 @@ button.withUserQuizz ion-icon {
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  position: relative;
 }
 
 .all-quizz img,
@@ -195,4 +218,11 @@ button.withUserQuizz ion-icon {
 
 .hidden {
   display: none;
+}
+
+@media screen and (max-width: 1100px) {
+  .add-quizz{
+    justify-content: center;
+  align-items: center;
+  }
 }
