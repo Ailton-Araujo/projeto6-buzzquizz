@@ -509,15 +509,15 @@ function sendQuizz(){
 
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
-
+    
+    renderSenderLevel(userQuizz, quizzData);
     loadingFront.add("hidden");
     sendFront.remove("hidden");
-    renderSenderLevel(userQuizz, quizzData);
     }
   );
 
   sendQuizPromise.catch(()=>{
-    alert("Ertro no Servidor tente novamente")
+    alert("Erro no Servidor tente novamente")
     sendFront.add("hidden");
     levelsFront.remove("hidden");
   });
@@ -710,7 +710,6 @@ function toSend() {
   levelsFront.add("hidden");
   loadingFront.remove("hidden");
   sendQuizz();
-  
 }
 
 function toQuizz() {
