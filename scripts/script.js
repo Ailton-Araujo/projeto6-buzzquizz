@@ -169,6 +169,8 @@ function displayQuizz(array) {
 
     title[i].style.color = `${getContrastYIQ(entry.color)}`;
 
+    shuffle(questionItem);
+
     questionItem.index = i;
 
     playedArray.push(questionItem);
