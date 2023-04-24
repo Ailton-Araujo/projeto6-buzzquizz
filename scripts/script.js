@@ -257,14 +257,14 @@ function resultGame(array) {
   });
 
   let newArray = [];
-
+  
   let i = 0;
+
+  element.innerHTML = "";
 
   for (const entry of resultArrayOrdered) {
     newArray.push(entry.minValue);
   }
-
-  element.innerHTML = "";
 
   let index = binarySearch(newArray, accuracy);
 
