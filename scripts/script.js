@@ -108,7 +108,6 @@ function displayQuizzUserPage(id) {
 function hideQuizzPage() {
   document.querySelector(".home-page").classList.remove("hidden");
   document.querySelector(".quizz-page").classList.add("hidden");
-
   document.querySelector(".quizz-result").classList.add("hidden");
 
   chosenQuizzId = null;
@@ -129,6 +128,7 @@ function displayQuizz(array) {
 
   document.querySelector(".quizz-header").innerHTML = "";
   document.querySelector(".quizz-body").innerHTML = "";
+  document.querySelector(".quizz-result").innerHTML = "";
 
   const element = document.querySelector(".quizz-body");
 
@@ -257,8 +257,6 @@ function resultGame(array) {
   let newArray = [];
   
   let i = 0;
-
-  element.innerHTML = "";
 
   for (const entry of resultArrayOrdered) {
     newArray.push(entry.minValue);
