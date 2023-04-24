@@ -50,8 +50,6 @@ function displayAllQuizz(array) {
     if (userQuizzAdress[temp2] !== undefined) {
       for (let j = 0; j < userQuizzAdress.length; j++) {
         if (array.data[i].id === userQuizzAdress[j].id) {
-          console.log(array.data[i]);
-          console.log(array.data);
           elementUser.innerHTML += `
         <div data-test="my-quiz" class="quizz-container" onclick="getQuizz(${array.data[i].id})">
           <img src="${array.data[i].image}" />
@@ -508,7 +506,6 @@ function sendQuizz(){
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
     userQuizzAdress.push(quizzData);
-    console.log(response)
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
     
@@ -653,9 +650,6 @@ function toLevels() {
 }
 
 function toSend() {
-  const levelsFront = document.querySelector(".levelQuizz").classList;
-  const loadingFront = document.querySelector(".loading-screen.hidden").classList;
-
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
     const level = {
@@ -719,13 +713,13 @@ function toQuizz() {
   getQuizz(quizzID);
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  getAllQuizz();
-});
-
 function toHome() {
   window.location.reload();
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  getAllQuizz();
+});
 
 /* to Bonus
 
