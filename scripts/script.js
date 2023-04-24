@@ -17,7 +17,7 @@ const userQuizz = {
 
 let userQuizzAdress = [];
 
-let localQuizzesString = localStorage.getItem("quizzes");
+let localQuizzesString = localStorage.getItem("quizzesSemBonus");
 if (localQuizzesString !== null) {
   userQuizzAdress = JSON.parse(localQuizzesString);
 }
@@ -496,7 +496,6 @@ function sendQuizz(){
 
   let quizzData = {
     id: "",
-    key: "",
   };
   const sendQuizPromise = axios.post(api_url, userQuizz);
   levelsFront.add("hidden");
@@ -506,8 +505,9 @@ function sendQuizz(){
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
     userQuizzAdress.push(quizzData);
+    
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
-    localStorage.setItem("quizzes", localQuizzArdress);
+    localStorage.setItem("quizzesSemBonus", localQuizzArdress);
     
     loadingFront.add("hidden");
     sendFront.remove("hidden");
