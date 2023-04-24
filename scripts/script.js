@@ -491,7 +491,11 @@ function renderUserLevel(object) {
   }
 }
 
-function renderSenderLevel(object) {
+function sendQuizz(){
+  const loadingFront = document.querySelector(".loading-screen").classList;
+  const levelsFront = document.querySelector(".levelQuizz").classList;
+  const sendFront = document.querySelector(".sendQuizz.hidden").classList;
+
   let quizzData = {
     id: "",
     key: "",
@@ -508,18 +512,22 @@ function renderSenderLevel(object) {
 
     loadingFront.add("hidden");
     sendFront.remove("hidden");
+    renderSenderLevel(userQuizz, quizzData);
     }
   );
+
   sendQuizPromise.catch(()=>{
     alert("Ertro no Servidor tente novamente")
     sendFront.add("hidden");
     levelsFront.remove("hidden");
   });
+}
 
+function renderSenderLevel(object,object2) {
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="${quizzData.id}" class="userQuizzContainer" onclick="toQuizz()">
+  <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="toQuizz()">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
@@ -645,7 +653,6 @@ function toLevels() {
 function toSend() {
   const levelsFront = document.querySelector(".levelQuizz").classList;
   const loadingFront = document.querySelector(".loading-screen.hidden").classList;
-  const sendFront = document.querySelector(".sendQuizz.hidden").classList;
 
   let temp = 0;
   for (let i = 0; i < userQuizz.levels.length; i++) {
@@ -702,7 +709,8 @@ function toSend() {
 
   levelsFront.add("hidden");
   loadingFront.remove("hidden");
-  renderSenderLevel(userQuizz);
+  sendQuizz();
+  
 }
 
 function toQuizz() {
