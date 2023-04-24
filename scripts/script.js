@@ -500,19 +500,21 @@ function sendQuizz(){
     id: "",
     key: "",
   };
-
   const sendQuizPromise = axios.post(api_url, userQuizz);
+  levelsFront.add("hidden");
+  loadingFront.remove("hidden");
+
   sendQuizPromise.then((response) => {
     quizzData.id = response.data.id;
     quizzData.key = response.data.key;
     userQuizzAdress.push(quizzData);
-
+    console.log(response)
     let localQuizzArdress = JSON.stringify(userQuizzAdress);
     localStorage.setItem("quizzes", localQuizzArdress);
     
-    renderSenderLevel(userQuizz, quizzData);
     loadingFront.add("hidden");
     sendFront.remove("hidden");
+    renderSenderLevel(response.data);
     }
   );
 
@@ -523,11 +525,11 @@ function sendQuizz(){
   });
 }
 
-function renderSenderLevel(object,object2) {
+function renderSenderLevel(object) {
   const element = document.querySelector(".userSendQuizz");
   element.innerHTML = "";
   element.innerHTML += `
-  <div data-test="success-banner" id="${object2.id}" class="userQuizzContainer" onclick="toQuizz()">
+  <div data-test="success-banner" id="${object.id}" class="userQuizzContainer" onclick="toQuizz()">
       <img src="${object.image}" />
       <h3>${object.title}</h3>
   </div>
@@ -707,8 +709,6 @@ function toSend() {
     }
   }
 
-  levelsFront.add("hidden");
-  loadingFront.remove("hidden");
   sendQuizz();
 }
 
